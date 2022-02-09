@@ -39,6 +39,8 @@ public class Example {
             @Override
             public void ping(Track track) {
                 track.retrieveMP3().whenComplete((mp3, throwable) -> {
+                    if (throwable != null) Logger.error(throwable);
+                    if (mp3 == null) return;
                     mp3.download(this.callback);
                 });
             }

@@ -7,6 +7,7 @@ import com.hawolt.data.media.Track;
 import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.download.TrackFile;
 import com.hawolt.logging.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -19,21 +20,34 @@ public class MP3 {
     private final Track track;
     private EXTM3U extm3U;
 
-    public MP3(Track track, Transcoding... transcodings) {
+    public static MP3 load(Track track, Transcoding... transcodings) {
+        return load(track, 0, transcodings);
+    }
+
+    public static MP3 load(Track track, int attempt, Transcoding... transcodings) {
+        if (attempt > 10) return null;
+        try {
+            return new MP3(track, transcodings);
+        } catch (Exception e) {
+            if (e instanceof JSONException) {
+                return load(track, ++attempt, transcodings);
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public MP3(Track track, Transcoding... transcodings) throws Exception {
         this.track = track;
         for (Transcoding transcoding : transcodings) {
             if (transcoding.getProtocol().equalsIgnoreCase("hls")) {
-                try {
-                    String auth = String.join("=", "client_id", VirtualClient.getID());
-                    String resource = String.join("?", transcoding.getUrl(), auth);
-                    Logger.info(resource);
-                    Request request = new Request(resource);
-                    Response response = request.execute();
-                    String target = new JSONObject(response.getBodyAsString()).getString("url");
-                    extm3U = new EXTM3U(target);
-                } catch (Exception e) {
-                    Logger.error(e);
-                }
+                String auth = String.join("=", "client_id", VirtualClient.getID());
+                String resource = String.join("?", transcoding.getUrl(), auth);
+                Logger.info(resource);
+                Request request = new Request(resource);
+                Response response = request.execute();
+                String target = new JSONObject(response.getBodyAsString()).getString("url");
+                extm3U = new EXTM3U(target);
                 break;
             }
         }

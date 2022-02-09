@@ -52,7 +52,7 @@ public class Track extends Hydratable {
     }
 
     public CompletableFuture<MP3> retrieveMP3() {
-        return CompletableFuture.supplyAsync(() -> new MP3(this, media.getTranscoding()));
+        return CompletableFuture.supplyAsync(() -> MP3.load(this, media.getTranscoding()));
     }
 
     public boolean isCached() {

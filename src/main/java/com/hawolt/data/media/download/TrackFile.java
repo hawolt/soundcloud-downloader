@@ -60,11 +60,11 @@ public class TrackFile implements IFile, FileCallback {
     @Override
     public void onAssembly(int index, IFile file) {
         if (++fragments == map.size()) {
-            Logger.info("Assembled track {}", mp3.getTrack().getPermalink());
+            Logger.debug("Assembled track {}", mp3.getTrack().getPermalink());
             final byte[] bytes = getBytes();
             callback.onCompletion(mp3.getTrack(), bytes);
         } else {
-            Logger.info("Downloaded fragment [{}/{}] of {}", index, map.size(), mp3.getTrack().getPermalink());
+            Logger.debug("Downloaded fragment [{}/{}] of {}", index, map.size(), mp3.getTrack().getPermalink());
         }
     }
 
@@ -72,7 +72,7 @@ public class TrackFile implements IFile, FileCallback {
     public void onFailure(int index, int attempt, String url) {
         Logger.error("Failed to download fragment {}:{}", index, url);
         if (attempt > 3) {
-            Logger.info("Failed to download track {}", mp3.getTrack().getPermalink());
+            Logger.debug("Failed to download track {}", mp3.getTrack().getPermalink());
             callback.onFailure(mp3.getTrack(), index);
         } else {
             EXECUTOR_SERVICE.execute(map.get(index));

@@ -23,6 +23,7 @@ public class TrackLoader implements Callable<Track> {
     public Track call() throws Exception {
         Request request = new Request(resource);
         Response response = request.execute();
+        if (response.getCode() == 429) return call();
         return new Track(new JSONArray(response.getBodyAsString()).getJSONObject(0));
     }
 }
