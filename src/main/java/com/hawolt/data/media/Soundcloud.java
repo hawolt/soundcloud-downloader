@@ -2,6 +2,7 @@ package com.hawolt.data.media;
 
 import com.hawolt.Request;
 import com.hawolt.Response;
+import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.data.media.hydratable.HydratableInterface;
 import com.hawolt.data.media.hydratable.Hydration;
@@ -25,7 +26,8 @@ import java.util.concurrent.Executors;
 
 public class Soundcloud {
 
-    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    public static final ExecutorService MULTI_EXECUTOR_SERVICE = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    public final static ExecutorService SINGLE_EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
 
     private static final Map<String, MediaInterface<? extends Hydratable>> MAPPING = new HashMap<>();
     private static final Map<Class<? extends Hydratable>, HydratableInterface<? extends Hydratable>> MANAGER = new HashMap<>();
@@ -44,22 +46,33 @@ public class Soundcloud {
         return (T) type;
     }
 
-    static void load(String link) throws IOException {
-        Request request = new Request(link);
-        Response response = request.execute();
-        JSONArray hydration = Hydration.from(response.getBodyAsString());
-        for (int i = 0; i < hydration.length(); i++) {
-            JSONObject object = hydration.getJSONObject(i);
-            if (!object.has("hydratable")) continue;
-            String hydratable = object.getString("hydratable");
-            if (!MAPPING.containsKey(hydratable)) continue;
-            CompletableFuture.supplyAsync(() -> {
-                return MAPPING.get(hydratable).convert(object);
-            }, EXECUTOR).whenComplete((capture, e) -> {
-                if (e != null) Logger.error(e);
-                if (capture == null) return;
-                MANAGER.get(capture.getClass()).accept(modify(capture));
-            });
-        }
+    static void load(String link) {
+        load(link, null);
+    }
+
+    static void load(String link, DownloadCallback callback) {
+        SINGLE_EXECUTOR_SERVICE.execute(() -> {
+            try {
+                Request request = new Request(link);
+                Response response = request.execute();
+                JSONArray hydration = Hydration.from(response.getBodyAsString());
+                for (int i = 0; i < hydration.length(); i++) {
+                    JSONObject object = hydration.getJSONObject(i);
+                    if (!object.has("hydratable")) continue;
+                    String hydratable = object.getString("hydratable");
+                    if (!MAPPING.containsKey(hydratable)) continue;
+                    CompletableFuture.supplyAsync(() -> {
+                        return MAPPING.get(hydratable).convert(object);
+                    }, MULTI_EXECUTOR_SERVICE).whenComplete((capture, e) -> {
+                        if (e != null) Logger.error(e);
+                        if (capture == null) return;
+                        MANAGER.get(capture.getClass()).accept(modify(capture));
+                    });
+                }
+            } catch (IOException e) {
+                if (callback == null) Logger.error(e.getMessage());
+                else callback.onLoadFailure(link, e);
+            }
+        });
     }
 }

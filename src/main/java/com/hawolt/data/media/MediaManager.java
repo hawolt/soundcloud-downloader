@@ -30,10 +30,6 @@ public abstract class MediaManager implements MediaCallback {
     }
 
     public void load(String link) {
-        try {
-            Soundcloud.load(link);
-        } catch (IOException e) {
-            this.callback.onLoadFailure(link, e);
-        }
+        Soundcloud.load(link, callback);
     }
 }

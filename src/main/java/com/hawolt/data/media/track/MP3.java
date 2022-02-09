@@ -30,6 +30,7 @@ public class MP3 {
             return new MP3(track, transcodings);
         } catch (Exception e) {
             if (e instanceof JSONException) {
+                Logger.error(e.getMessage());
                 return load(track, ++attempt, transcodings);
             } else {
                 return null;

@@ -1,5 +1,6 @@
 package com.hawolt.data.media.download;
 
+import com.hawolt.data.media.Soundcloud;
 import com.hawolt.data.media.Track;
 import com.hawolt.logging.Logger;
 
@@ -10,8 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created: 09.02.2022 13:04
@@ -20,7 +19,6 @@ import java.util.concurrent.Executors;
 
 public class FileManager {
 
-    private static final ExecutorService SERVICE = Executors.newSingleThreadExecutor();
     public static Path path;
 
     static {
@@ -57,7 +55,7 @@ public class FileManager {
                 Logger.error(e);
             }
             return file;
-        }, SERVICE);
+        }, Soundcloud.SINGLE_EXECUTOR_SERVICE);
     }
 
 }

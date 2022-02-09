@@ -11,6 +11,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created: 09.02.2022 12:39
@@ -52,7 +54,7 @@ public class Track extends Hydratable {
     }
 
     public CompletableFuture<MP3> retrieveMP3() {
-        return CompletableFuture.supplyAsync(() -> MP3.load(this, media.getTranscoding()));
+        return CompletableFuture.supplyAsync(() -> MP3.load(this, media.getTranscoding()), Soundcloud.SINGLE_EXECUTOR_SERVICE);
     }
 
     public boolean isCached() {

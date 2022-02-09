@@ -2,6 +2,7 @@ package com.hawolt.data.media;
 
 import com.hawolt.Request;
 import com.hawolt.Response;
+import com.hawolt.logging.Logger;
 import org.json.JSONArray;
 
 import java.util.concurrent.Callable;
@@ -23,7 +24,10 @@ public class TrackLoader implements Callable<Track> {
     public Track call() throws Exception {
         Request request = new Request(resource);
         Response response = request.execute();
-        if (response.getCode() == 429) return call();
+        if (response.getCode() == 429) {
+            Logger.error(response.getBodyAsString().trim());
+            return call();
+        }
         return new Track(new JSONArray(response.getBodyAsString()).getJSONObject(0));
     }
 }
