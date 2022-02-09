@@ -6,6 +6,7 @@ import com.hawolt.data.media.track.MP3;
 import com.hawolt.data.media.track.Media;
 import com.hawolt.data.media.track.Tags;
 import com.hawolt.data.media.track.User;
+import com.hawolt.logging.Logger;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -47,6 +48,7 @@ public class Track extends Hydratable {
         this.id = !o.isNull("id") ? o.getLong("id") : 0;
         this.duration = !o.isNull("full_duration") ? o.getLong("full_duration") : 0;
         this.commentCount = !o.isNull("comment_count") ? o.getInt("comment_count") : 0;
+        Logger.debug("{} metadata loaded", id);
     }
 
     public CompletableFuture<MP3> retrieveMP3() {

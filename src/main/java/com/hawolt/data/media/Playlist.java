@@ -1,6 +1,10 @@
 package com.hawolt.data.media;
 
+import com.hawolt.Request;
+import com.hawolt.Response;
+import com.hawolt.VirtualClient;
 import com.hawolt.data.media.hydratable.Hydratable;
+import com.hawolt.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -20,7 +24,16 @@ public class Playlist extends Hydratable implements Iterable<Track> {
         JSONObject data = object.getJSONObject("data");
         JSONArray tracks = data.getJSONArray("tracks");
         for (int i = 0; i < tracks.length(); i++) {
-            list.add(new Track(tracks.getJSONObject(i)));
+            JSONObject track = tracks.getJSONObject(i);
+            long id = track.getLong("id");
+            try {
+                String resource = String.format("https://api-v2.soundcloud.com/tracks?ids=%s&client_id=%s", id, VirtualClient.getID());
+                Request request = new Request(resource);
+                Response response = request.execute();
+                list.add(new Track(new JSONArray(response.getBodyAsString()).getJSONObject(0)));
+            } catch (Exception e) {
+                Logger.error(e);
+            }
         }
     }
 

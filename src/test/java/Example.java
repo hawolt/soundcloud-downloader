@@ -5,7 +5,6 @@ import com.hawolt.data.media.download.FileManager;
 import com.hawolt.logging.Logger;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 /**
  * Created: 09.02.2022 12:22
@@ -44,7 +43,6 @@ public class Example {
                 });
             }
         };
-        manager.load("https://soundcloud.com/zevranx/miracle-zevran-bootleg");
-        new Scanner(System.in).nextLine();
+        manager.load("https://soundcloud.com/hawolt/sets/mix");
     }
 }

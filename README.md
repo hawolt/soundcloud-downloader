@@ -48,7 +48,6 @@ public class Example {
             }
         };
         manager.load("https://soundcloud.com/zevranx/miracle-zevran-bootleg");
-        new Scanner(System.in).nextLine();
     }
 }
 ```

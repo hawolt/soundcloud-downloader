@@ -7,12 +7,16 @@ import com.hawolt.data.media.hydratable.HydratableInterface;
 import com.hawolt.data.media.hydratable.Hydration;
 import com.hawolt.data.media.impl.MediaPlaylistInterface;
 import com.hawolt.data.media.impl.MediaTrackInterface;
+import com.hawolt.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created: 09.02.2022 11:41
@@ -20,6 +24,8 @@ import java.util.Map;
  **/
 
 public class Soundcloud {
+
+    private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     private static final Map<String, MediaInterface<? extends Hydratable>> MAPPING = new HashMap<>();
     private static final Map<Class<? extends Hydratable>, HydratableInterface<? extends Hydratable>> MANAGER = new HashMap<>();
@@ -47,8 +53,13 @@ public class Soundcloud {
             if (!object.has("hydratable")) continue;
             String hydratable = object.getString("hydratable");
             if (!MAPPING.containsKey(hydratable)) continue;
-            Hydratable capture = MAPPING.get(hydratable).convert(object);
-            MANAGER.get(capture.getClass()).accept(modify(capture));
+            CompletableFuture.supplyAsync(() -> {
+                return MAPPING.get(hydratable).convert(object);
+            }, EXECUTOR).whenComplete((capture, e) -> {
+                if (e != null) Logger.error(e);
+                if (capture == null) return;
+                MANAGER.get(capture.getClass()).accept(modify(capture));
+            });
         }
     }
 }
