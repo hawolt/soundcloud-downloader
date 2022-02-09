@@ -8,12 +8,8 @@ import com.hawolt.data.media.download.FileManager;
 import com.hawolt.logging.Logger;
 
 import java.io.IOException;
-import java.util.Scanner;
-
-/**
- * Created: 09.02.2022 12:22
- * Author: Twitter @hawolt
- **/
+import java.util.HashSet;
+import java.util.Set;
 
 public class Example {
     public static void main(String[] args) {
@@ -39,15 +35,20 @@ public class Example {
                 Logger.error("Failed to load track {}: {}", link, exception.getMessage());
             }
         };
+        Set<Long> set = new HashSet<>();
         MediaManager manager = new MediaManager(callback) {
             @Override
             public void ping(Track track) {
+                if (set.contains(track.getId())) return;
+                set.add(track.getId());
                 track.retrieveMP3().whenComplete((mp3, throwable) -> {
+                    if (throwable != null) Logger.error(throwable);
+                    if (mp3 == null) return;
                     mp3.download(this.callback);
                 });
             }
         };
-        manager.load("https://soundcloud.com/zevranx/miracle-zevran-bootleg");
+        manager.load("https://soundcloud.com/hawolt/sets/mix");
     }
 }
 ```
