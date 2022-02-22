@@ -18,7 +18,7 @@ public class SoundcloudCLI {
 
     public static void main(String[] args) {
         Parser parser = new Parser();
-        parser.add(Argument.create("dl", "download", "resource(s) to download", false, false, false));
+        parser.add(Argument.create("dl", "download", "resource(s) to download", true, false, false));
         parser.add(Argument.create("dir", "directory", "directory to save files", false, true, false));
         parser.add(Argument.create("t", "threads", "specify amount of threads", false, true, false));
         try {
