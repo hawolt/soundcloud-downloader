@@ -17,6 +17,7 @@ import java.util.concurrent.Executors;
 public class SoundcloudCLI {
 
     public static void main(String[] args) {
+        System.setProperty("hwc-suppress", "true");
         Parser parser = new Parser();
         parser.add(Argument.create("dl", "download", "resource(s) to download", true, false, false));
         parser.add(Argument.create("dir", "directory", "directory to save files", false, true, false));
