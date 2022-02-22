@@ -1,10 +1,10 @@
 package com.hawolt.data.media.download;
 
-import com.hawolt.data.media.Soundcloud;
+import com.hawolt.Logger;
 import com.hawolt.data.media.download.impl.TrackFragment;
+import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.data.media.track.EXTM3U;
 import com.hawolt.data.media.track.MP3;
-import com.hawolt.logging.Logger;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created: 09.02.2022 13:02
+ * Created: 09/02/2022 13:02
  * Author: Twitter @hawolt
  **/
 
 public class TrackFile implements IFile, FileCallback {
 
-    private Map<Integer, TrackFragment> map = new HashMap<>();
+    private final Map<Integer, TrackFragment> map = new HashMap<>();
     private DownloadCallback callback;
     private int fragments;
     private MP3 mp3;
@@ -31,7 +31,7 @@ public class TrackFile implements IFile, FileCallback {
         List<String> list = extm3U.getFragmentList();
         for (int i = 0; i < list.size(); i++) {
             TrackFragment fragment = new TrackFragment(this, i, list.get(i));
-            Soundcloud.MULTI_EXECUTOR_SERVICE.execute(fragment);
+            Hydratable.EXECUTOR_SERVICE.execute(fragment);
             map.put(i, fragment);
         }
     }
@@ -72,7 +72,7 @@ public class TrackFile implements IFile, FileCallback {
             Logger.debug("Failed to download track {}", mp3.getTrack().getPermalink());
             callback.onFailure(mp3.getTrack(), index);
         } else {
-            Soundcloud.MULTI_EXECUTOR_SERVICE.execute(map.get(index));
+            Hydratable.EXECUTOR_SERVICE.execute(map.get(index));
         }
     }
 }

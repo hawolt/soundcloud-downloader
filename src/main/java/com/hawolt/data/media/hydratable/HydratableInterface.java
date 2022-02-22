@@ -1,7 +1,7 @@
 package com.hawolt.data.media.hydratable;
 
 /**
- * Created: 09.02.2022 12:49
+ * Created: 09/02/2022 12:49
  * Author: Twitter @hawolt
  **/
 

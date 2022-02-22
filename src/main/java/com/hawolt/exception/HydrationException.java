@@ -1,7 +1,7 @@
 package com.hawolt.exception;
 
 /**
- * Created: 09.02.2022 12:18
+ * Created: 09/02/2022 12:18
  * Author: Twitter @hawolt
  **/
 

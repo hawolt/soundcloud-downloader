@@ -1,6 +1,8 @@
-package com.hawolt;
+package com.hawolt.data;
 
-import com.hawolt.logging.Logger;
+import com.hawolt.Logger;
+import com.hawolt.Request;
+import com.hawolt.Response;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created: 07.02.2022 12:02
+ * Created: 07/02/2022 12:02
  * Author: Twitter @hawolt
  **/
 

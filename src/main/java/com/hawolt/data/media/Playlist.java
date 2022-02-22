@@ -1,19 +1,20 @@
 package com.hawolt.data.media;
 
-import com.hawolt.Request;
+import com.hawolt.Logger;
 import com.hawolt.Response;
-import com.hawolt.VirtualClient;
+import com.hawolt.data.VirtualClient;
 import com.hawolt.data.media.hydratable.Hydratable;
-import com.hawolt.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
- * Created: 09.02.2022 12:41
+ * Created: 09/02/2022 12:41
  * Author: Twitter @hawolt
  **/
 
@@ -24,17 +25,25 @@ public class Playlist extends Hydratable implements Iterable<Track> {
     public Playlist(JSONObject object) {
         JSONObject data = object.getJSONObject("data");
         JSONArray tracks = data.getJSONArray("tracks");
+        List<MediaLoader> list = new ArrayList<>();
         for (int i = 0; i < tracks.length(); i++) {
             JSONObject track = tracks.getJSONObject(i);
             long id = track.getLong("id");
             try {
                 String resource = String.format("https://api-v2.soundcloud.com/tracks?ids=%s&client_id=%s", id, VirtualClient.getID());
-                Request request = new Request(resource);
-                Response response = request.execute();
-                list.add(new Track(new JSONArray(response.getBodyAsString()).getJSONObject(0)));
+                list.add(new MediaLoader(resource));
             } catch (Exception e) {
                 Logger.error(e);
             }
+        }
+        try {
+            Logger.debug("Loading metadata for playlist with {} element{}", list.size(), list.size() == 1 ? "" : "s");
+            List<Future<Response>> futures = Hydratable.EXECUTOR_SERVICE.invokeAll(list);
+            for (Future<Response> future : futures) {
+                this.list.add(new Track(new JSONArray(future.get().getBodyAsString()).getJSONObject(0)));
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            Logger.error(e);
         }
     }
 

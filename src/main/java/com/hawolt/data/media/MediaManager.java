@@ -4,21 +4,17 @@ import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.hydratable.impl.PlaylistManager;
 import com.hawolt.data.media.hydratable.impl.TrackManager;
 
-import java.io.IOException;
-
 /**
- * Created: 09.02.2022 12:57
+ * Created: 09/02/2022 12:57
  * Author: Twitter @hawolt
  **/
 
-public abstract class MediaManager implements MediaCallback {
+public abstract class MediaManager implements MediaCallback, DownloadCallback {
 
-    protected final DownloadCallback callback;
     private final PlaylistManager manager;
 
-    public MediaManager(DownloadCallback callback) {
+    public MediaManager() {
         this.manager = new PlaylistManager(this);
-        this.callback = callback;
     }
 
     public PlaylistManager getPlaylistManager() {
@@ -30,6 +26,6 @@ public abstract class MediaManager implements MediaCallback {
     }
 
     public void load(String link) {
-        Soundcloud.load(link, callback);
+        Soundcloud.load(link, this);
     }
 }

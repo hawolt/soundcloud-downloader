@@ -1,21 +1,19 @@
 package com.hawolt.data.media;
 
+import com.hawolt.Logger;
 import com.hawolt.data.media.download.FileManager;
 import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.data.media.track.MP3;
 import com.hawolt.data.media.track.Media;
 import com.hawolt.data.media.track.Tags;
 import com.hawolt.data.media.track.User;
-import com.hawolt.logging.Logger;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
- * Created: 09.02.2022 12:39
+ * Created: 09/02/2022 12:39
  * Author: Twitter @hawolt
  **/
 
@@ -29,7 +27,8 @@ public class Track extends Hydratable {
 
     private String description, title, genre, link, permalink, artwork;
     private int likeCount, commentCount, playbackCount;
-    private long id, duration;
+    private final long id;
+    private long duration;
 
     public Track(long t) {
         this.id = t;
@@ -50,11 +49,11 @@ public class Track extends Hydratable {
         this.id = !o.isNull("id") ? o.getLong("id") : 0;
         this.duration = !o.isNull("full_duration") ? o.getLong("full_duration") : 0;
         this.commentCount = !o.isNull("comment_count") ? o.getInt("comment_count") : 0;
-        Logger.debug("{} metadata loaded", id);
+        Logger.debug("loaded metadata for track {}", id);
     }
 
     public CompletableFuture<MP3> retrieveMP3() {
-        return CompletableFuture.supplyAsync(() -> MP3.load(this, media.getTranscoding()), Soundcloud.SINGLE_EXECUTOR_SERVICE);
+        return CompletableFuture.supplyAsync(() -> MP3.load(this, media.getTranscoding()), Hydratable.EXECUTOR_SERVICE);
     }
 
     public boolean isCached() {

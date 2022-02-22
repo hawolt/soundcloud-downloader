@@ -1,8 +1,7 @@
 package com.hawolt.data.media.download;
 
-import com.hawolt.data.media.Soundcloud;
+import com.hawolt.Logger;
 import com.hawolt.data.media.Track;
-import com.hawolt.logging.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,7 +12,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Created: 09.02.2022 13:04
+ * Created: 09/02/2022 13:04
  * Author: Twitter @hawolt
  **/
 
@@ -22,12 +21,16 @@ public class FileManager {
     public static Path path;
 
     static {
-        FileManager.path = Paths.get(System.getProperty("user.home")).resolve(".hawolt").resolve("soundcloud").resolve("songs");
         try {
-            Files.createDirectories(path);
+            setup(Paths.get(System.getProperty("user.home")).resolve("soundcloud-dl"));
         } catch (IOException e) {
             Logger.error(e);
         }
+    }
+
+    public static void setup(Path path) throws IOException {
+        Files.createDirectories(path);
+        FileManager.path = path;
     }
 
     public static File[] getCache() {
@@ -55,7 +58,7 @@ public class FileManager {
                 Logger.error(e);
             }
             return file;
-        }, Soundcloud.SINGLE_EXECUTOR_SERVICE);
+        });
     }
 
 }

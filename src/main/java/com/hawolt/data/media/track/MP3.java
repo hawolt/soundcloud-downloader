@@ -1,17 +1,17 @@
 package com.hawolt.data.media.track;
 
+import com.hawolt.Logger;
 import com.hawolt.Request;
 import com.hawolt.Response;
-import com.hawolt.VirtualClient;
+import com.hawolt.data.VirtualClient;
 import com.hawolt.data.media.Track;
 import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.download.TrackFile;
-import com.hawolt.logging.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created: 09.02.2022 12:59
+ * Created: 09/02/2022 12:59
  * Author: Twitter @hawolt
  **/
 
@@ -33,6 +33,7 @@ public class MP3 {
                 Logger.error(e.getMessage());
                 return load(track, ++attempt, transcodings);
             } else {
+                System.out.println("null bro");
                 return null;
             }
         }
@@ -44,7 +45,7 @@ public class MP3 {
             if (transcoding.getProtocol().equalsIgnoreCase("hls")) {
                 String auth = String.join("=", "client_id", VirtualClient.getID());
                 String resource = String.join("?", transcoding.getUrl(), auth);
-                Logger.info(resource);
+                Logger.debug("stream for track {} at resource {}", track.getId(), resource);
                 Request request = new Request(resource);
                 Response response = request.execute();
                 String target = new JSONObject(response.getBodyAsString()).getString("url");

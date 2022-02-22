@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created: 09.02.2022 12:12
+ * Created: 09/02/2022 12:12
  * Author: Twitter @hawolt
  **/
 

@@ -1,15 +1,15 @@
 package com.hawolt.data.media.download.impl;
 
+import com.hawolt.Logger;
 import com.hawolt.Request;
 import com.hawolt.Response;
 import com.hawolt.data.media.download.FileCallback;
 import com.hawolt.data.media.download.IFile;
-import com.hawolt.logging.Logger;
 
 import java.io.IOException;
 
 /**
- * Created: 09.02.2022 13:01
+ * Created: 09/02/2022 13:01
  * Author: Twitter @hawolt
  **/
 
