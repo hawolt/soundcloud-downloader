@@ -1,54 +1,38 @@
 # soundcloud
-example usage
-```java
-import com.hawolt.data.media.MediaManager;
-import com.hawolt.data.media.Track;
-import com.hawolt.data.media.download.DownloadCallback;
-import com.hawolt.data.media.download.FileManager;
-import com.hawolt.logging.Logger;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+software requirements
 
-public class Example {
-    public static void main(String[] args) {
-        DownloadCallback callback = new DownloadCallback() {
-            @Override
-            public void onCompletion(Track track, byte[] b) {
-                FileManager.store(track, b).whenComplete((file, fex) -> {
-                    if (fex != null) {
-                        Logger.error(fex);
-                    } else {
-                        Logger.info("Track stored in bsc cache");
-                    }
-                });
-            }
+* git
+* maven
+* java 8
 
-            @Override
-            public void onFailure(Track track, int fragment) {
-                Logger.error("Failed to load fragment {} for {}", fragment, track.getPermalink());
-            }
+to build the project run
 
-            @Override
-            public void onLoadFailure(String link, IOException exception) {
-                Logger.error("Failed to load track {}: {}", link, exception.getMessage());
-            }
-        };
-        Set<Long> set = new HashSet<>();
-        MediaManager manager = new MediaManager(callback) {
-            @Override
-            public void ping(Track track) {
-                if (set.contains(track.getId())) return;
-                set.add(track.getId());
-                track.retrieveMP3().whenComplete((mp3, throwable) -> {
-                    if (throwable != null) Logger.error(throwable);
-                    if (mp3 == null) return;
-                    mp3.download(this.callback);
-                });
-            }
-        };
-        manager.load("https://soundcloud.com/hawolt/sets/mix");
-    }
-}
+```bash
+git clone https://github.com/hawolt/mobafire-bot
+cd soundcloud-downloader
+bash setup.sh
 ```
+
+this will create scdl.sh which you can run using
+
+```bash
+./scdl.sh
+```
+
+when run without arguments it will print a little help message
+
+```
+Command          | Shortcut  | Required  | Argument  | Once  | Description
+download         | dl        | true      | false     | false | resource(s) to download
+threads          | t         | false     | false     | true  | specify amount of threads
+directory        | dir       | false     | false     | true  | directory to save files
+```
+
+to download something simply use the `-dl` or `--download` arg followed by the soundcloud url, you can use this argument more than once
+
+```bash
+./scdl.sh -dl https://soundcloud.com/hawolt/miracle-zevran-bootleg
+```
+
+if you want to speed up the downloads or change the default download directory you can use `--directory /path/to/dir` or `--threads 10` but be aware that to many threads will cause rate limit issues which are currently not handled properly
