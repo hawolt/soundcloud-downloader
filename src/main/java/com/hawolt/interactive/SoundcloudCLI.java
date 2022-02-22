@@ -36,11 +36,10 @@ public class SoundcloudCLI {
             for (String resource : resources) {
                 manager.load(resource);
             }
-        } catch (ParserException e) {
+        } catch (IOException | ParserException e) {
             Logger.error(e.getMessage());
             Logger.error(parser.getHelp());
-        } catch (IOException e) {
-            Logger.error("Unable to setup specified directory");
+            System.exit(0);
         }
     }
 }
