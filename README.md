@@ -9,7 +9,7 @@ software requirements
 to build the project run
 
 ```bash
-git clone https://github.com/hawolt/mobafire-bot
+git clone https://github.com/hawolt/soundcloud-downloader
 cd soundcloud-downloader
 bash setup.sh
 ```
