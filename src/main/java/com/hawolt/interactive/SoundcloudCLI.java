@@ -38,7 +38,7 @@ public class SoundcloudCLI {
             }
         } catch (IOException | ParserException e) {
             Logger.error(e.getMessage());
-            Logger.error(parser.getHelp());
+            System.err.println(parser.getHelp());
             System.exit(0);
         }
     }
