@@ -22,6 +22,9 @@ public class Playlist extends Hydratable implements Iterable<Track> {
 
     private final List<Track> list = new ArrayList<>();
 
+    public Playlist() {
+    }
+
     public Playlist(JSONObject object) {
         JSONObject data = object.getJSONObject("data");
         JSONArray tracks = data.getJSONArray("tracks");

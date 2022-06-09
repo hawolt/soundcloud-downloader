@@ -1,9 +1,6 @@
 package com.hawolt.data.media.hydratable.impl;
 
-import com.hawolt.data.media.MediaCallback;
-import com.hawolt.data.media.Playlist;
-import com.hawolt.data.media.Soundcloud;
-import com.hawolt.data.media.Track;
+import com.hawolt.data.media.*;
 import com.hawolt.data.media.hydratable.HydratableInterface;
 
 /**
@@ -18,6 +15,7 @@ public class PlaylistManager implements HydratableInterface<Playlist> {
     public PlaylistManager(MediaCallback callback) {
         this.manager = new TrackManager(callback);
         Soundcloud.register(Playlist.class, this);
+        Soundcloud.register(Author.class, this);
     }
 
     public TrackManager getManager() {

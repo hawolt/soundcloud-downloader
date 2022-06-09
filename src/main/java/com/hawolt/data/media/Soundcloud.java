@@ -7,13 +7,16 @@ import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.data.media.hydratable.HydratableInterface;
 import com.hawolt.data.media.hydratable.Hydration;
+import com.hawolt.data.media.impl.MediaAuthorInterface;
 import com.hawolt.data.media.impl.MediaPlaylistInterface;
 import com.hawolt.data.media.impl.MediaTrackInterface;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -29,6 +32,7 @@ public class Soundcloud {
 
     static {
         MAPPING.put("playlist", new MediaPlaylistInterface());
+        MAPPING.put("user", new MediaAuthorInterface());
         MAPPING.put("sound", new MediaTrackInterface());
     }
 
@@ -51,17 +55,24 @@ public class Soundcloud {
                 Request request = new Request(link);
                 Response response = request.execute();
                 JSONArray hydration = Hydration.from(response.getBodyAsString());
+                Map<String, JSONObject> available = new HashMap<>();
                 for (int i = 0; i < hydration.length(); i++) {
                     JSONObject object = hydration.getJSONObject(i);
                     if (!object.has("hydratable")) continue;
                     String hydratable = object.getString("hydratable");
                     if (!MAPPING.containsKey(hydratable)) continue;
-                    CompletableFuture.supplyAsync(() -> MAPPING.get(hydratable).convert(object)).whenComplete((capture, e) -> {
-                        if (e != null) Logger.error(e);
-                        if (capture == null) return;
-                        MANAGER.get(capture.getClass()).accept(modify(capture));
-                    });
+                    available.put(hydratable, object);
                 }
+                String hydratable = available.containsKey("sound") ?
+                        "sound" : available.containsKey("playlist") ?
+                        "playlist" : available.containsKey("user") ?
+                        "user" : null;
+                if (hydratable == null) return;
+                CompletableFuture.supplyAsync(() -> MAPPING.get(hydratable).convert(available.get(hydratable))).whenComplete((capture, e) -> {
+                    if (e != null) Logger.error(e);
+                    if (capture == null) return;
+                    MANAGER.get(capture.getClass()).accept(modify(capture));
+                });
             } catch (IOException e) {
                 if (callback == null) Logger.error(e.getMessage());
                 else callback.onLoadFailure(link, e);

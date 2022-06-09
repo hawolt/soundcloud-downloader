@@ -1,4 +1,4 @@
-package com.hawolt.interactive;
+package interactive;
 
 import com.hawolt.*;
 import com.hawolt.data.media.download.FileManager;

@@ -1,4 +1,4 @@
-package com.hawolt.interactive;
+package interactive;
 
 import com.hawolt.Logger;
 import com.hawolt.data.SynchronizedInteger;
@@ -17,8 +17,8 @@ import java.util.Set;
 
 public class DefaultMediaManager extends MediaManager {
 
+    private final SynchronizedInteger counter = new SynchronizedInteger(0);
     private final Set<Long> set = new HashSet<>();
-    private SynchronizedInteger counter = new SynchronizedInteger(0);
 
     @Override
     public void ping(Track track) {
