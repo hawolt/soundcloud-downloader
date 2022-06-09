@@ -27,6 +27,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class Soundcloud {
 
+    public static long limit = 20;
+
     private static final Map<String, MediaInterface<? extends Hydratable>> MAPPING = new HashMap<>();
     private static final Map<Class<? extends Hydratable>, HydratableInterface<? extends Hydratable>> MANAGER = new HashMap<>();
 
@@ -45,7 +47,7 @@ public class Soundcloud {
         return (T) type;
     }
 
-    static void load(String link) {
+    public static void load(String link) {
         load(link, null);
     }
 

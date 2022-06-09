@@ -27,8 +27,9 @@ public class Author extends Playlist implements Iterable<Track> {
         long userId = data.getLong("id");
         List<MediaLoader> list = new ArrayList<>();
         try {
-            String next = String.format("https://api-v2.soundcloud.com/users/%s/tracks?client_id=%s&limit=20&offset=0", userId, VirtualClient.getID());
+            String next = String.format("https://api-v2.soundcloud.com/users/%s/tracks?client_id=%s&limit=%s&offset=0", userId, VirtualClient.getID(), Soundcloud.limit);
             do {
+                Logger.debug("Parsing {}", next);
                 MediaLoader loader = new MediaLoader(next);
                 Response response = loader.call();
                 JSONObject main = new JSONObject(response.getBodyAsString());
@@ -58,6 +59,10 @@ public class Author extends Playlist implements Iterable<Track> {
         } catch (InterruptedException | ExecutionException e) {
             Logger.error(e);
         }
+    }
+
+    public List<Track> getTrackList() {
+        return list;
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.hawolt.data.media.track.User;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -28,7 +29,7 @@ public class Track extends Hydratable {
     private String description, title, genre, link, permalink, artwork;
     private int likeCount, commentCount, playbackCount;
     private final long id;
-    private long duration;
+    private long duration, createdAt;
 
     public Track(long t) {
         this.id = t;
@@ -49,6 +50,7 @@ public class Track extends Hydratable {
         this.id = !o.isNull("id") ? o.getLong("id") : 0;
         this.duration = !o.isNull("full_duration") ? o.getLong("full_duration") : 0;
         this.commentCount = !o.isNull("comment_count") ? o.getInt("comment_count") : 0;
+        this.createdAt = Instant.parse(!o.isNull("created_at") ? o.getString("created_at") : String.valueOf(System.currentTimeMillis())).toEpochMilli();
         Logger.debug("loaded metadata for track {}", id);
     }
 
@@ -62,6 +64,10 @@ public class Track extends Hydratable {
 
     public File getFile() {
         return FileManager.getFile(this);
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
     }
 
     public long getDuration() {
