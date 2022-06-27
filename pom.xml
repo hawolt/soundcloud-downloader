@@ -56,7 +56,7 @@
         <dependency>
             <groupId>com.github.hawolt</groupId>
             <artifactId>hawolt-core</artifactId>
-            <version>5a3f110ecc7</version>
+            <version>db6c1e9c128</version>
         </dependency>
     </dependencies>
 </project>
