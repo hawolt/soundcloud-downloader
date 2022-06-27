@@ -45,4 +45,7 @@ public class Tags {
         return builder.toString().trim();
     }
 
+    public List<String> getList() {
+        return list;
+    }
 }
