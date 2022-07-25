@@ -6,7 +6,7 @@
 
     <groupId>com.hawolt</groupId>
     <artifactId>Soundcloud</artifactId>
-    <version>1.0</version>
+    <version>1.011</version>
 
     <build>
         <plugins>
