@@ -26,6 +26,10 @@ public class DefaultMediaManager extends MediaManager {
             Logger.debug("track {} skipped as duplicate entry", track.getId());
             return;
         }
+        if (FileManager.isCached(track)) {
+            Logger.debug("track {} skipped as cached entry", track.getId());
+            return;
+        }
         set.add(track.getId());
         track.retrieveMP3().whenComplete((mp3, throwable) -> {
             if (throwable != null) Logger.error(throwable);
@@ -55,7 +59,7 @@ public class DefaultMediaManager extends MediaManager {
     }
 
     @Override
-    public void onLoadFailure(String link, IOException exception) {
+    public void onLoadFailure(String link, Exception exception) {
         Logger.error("Failed to load track {}: {}", link, exception.getMessage());
     }
 }

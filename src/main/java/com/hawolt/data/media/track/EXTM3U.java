@@ -1,9 +1,8 @@
 package com.hawolt.data.media.track;
 
-import com.hawolt.Request;
 import com.hawolt.Response;
+import com.hawolt.data.media.MediaLoader;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,9 +18,9 @@ public class EXTM3U {
     private final Map<String, String> map = new HashMap<>();
     private final List<String> list = new LinkedList<>();
 
-    public EXTM3U(String target) throws IOException {
-        Request request = new Request(target);
-        Response response = request.execute();
+    public EXTM3U(String target) throws Exception {
+        MediaLoader loader = new MediaLoader(target);
+        Response response = loader.call();
         String plain = response.getBodyAsString();
         String[] lines = plain.split("\n");
         for (String line : lines) {

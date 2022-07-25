@@ -2,7 +2,6 @@ package com.hawolt.data.media.impl;
 
 import com.hawolt.data.media.Author;
 import com.hawolt.data.media.MediaInterface;
-import com.hawolt.data.media.Playlist;
 import org.json.JSONObject;
 
 /**

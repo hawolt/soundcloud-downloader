@@ -1,9 +1,9 @@
 package com.hawolt.data.media.track;
 
 import com.hawolt.Logger;
-import com.hawolt.Request;
 import com.hawolt.Response;
 import com.hawolt.data.VirtualClient;
+import com.hawolt.data.media.MediaLoader;
 import com.hawolt.data.media.Track;
 import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.download.TrackFile;
@@ -46,8 +46,8 @@ public class MP3 {
                 String auth = String.join("=", "client_id", VirtualClient.getID());
                 String resource = String.join("?", transcoding.getUrl(), auth);
                 Logger.debug("stream for track {} at resource {}", track.getId(), resource);
-                Request request = new Request(resource);
-                Response response = request.execute();
+                MediaLoader loader = new MediaLoader(resource);
+                Response response = loader.call();
                 String target = new JSONObject(response.getBodyAsString()).getString("url");
                 extm3U = new EXTM3U(target);
                 break;

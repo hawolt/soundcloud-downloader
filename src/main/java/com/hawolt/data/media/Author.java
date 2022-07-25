@@ -25,6 +25,10 @@ public class Author extends Playlist implements Iterable<Track> {
     private final long userId;
 
     public Author(JSONObject object) {
+        this(object, -1L);
+    }
+
+    public Author(JSONObject object, long stopAtTrackId) {
         JSONObject data = object.getJSONObject("data");
         this.userId = data.getLong("id");
         List<MediaLoader> list = new ArrayList<>();
@@ -36,17 +40,21 @@ public class Author extends Playlist implements Iterable<Track> {
                 Response response = loader.call();
                 JSONObject main = new JSONObject(response.getBodyAsString());
                 JSONArray tracks = main.getJSONArray("collection");
-                for (int i = 0; i < tracks.length(); i++) {
-                    JSONObject track = tracks.getJSONObject(i);
-                    long trackId = track.getLong("id");
-                    String resource = String.format("https://api-v2.soundcloud.com/tracks?ids=%s&client_id=%s", trackId, VirtualClient.getID());
-                    list.add(new MediaLoader(resource));
-                }
                 if (main.isNull("next_href")) {
                     next = null;
                 } else {
                     String clientID = String.join("=", "client_id", VirtualClient.getID());
                     next = String.join("&", main.getString("next_href"), clientID);
+                }
+                for (int i = 0; i < tracks.length(); i++) {
+                    JSONObject track = tracks.getJSONObject(i);
+                    long trackId = track.getLong("id");
+                    String resource = String.format("https://api-v2.soundcloud.com/tracks?ids=%s&client_id=%s", trackId, VirtualClient.getID());
+                    list.add(new MediaLoader(resource));
+                    if (stopAtTrackId == trackId) {
+                        next = null;
+                        break;
+                    }
                 }
             } while (next != null);
         } catch (Exception e) {
@@ -56,7 +64,12 @@ public class Author extends Playlist implements Iterable<Track> {
             Logger.debug("Loading metadata for playlist with {} element{}", list.size(), list.size() == 1 ? "" : "s");
             List<Future<Response>> futures = Hydratable.EXECUTOR_SERVICE.invokeAll(list);
             for (Future<Response> future : futures) {
-                this.list.add(new Track(new JSONArray(future.get().getBodyAsString()).getJSONObject(0)));
+                try {
+                    this.list.add(new Track(new JSONArray(future.get().getBodyAsString()).getJSONObject(0)));
+                } catch (Exception e) {
+                    Logger.error("Invalid JSON {}", future.get().getBodyAsString());
+                    Logger.error(e);
+                }
             }
         } catch (InterruptedException | ExecutionException e) {
             Logger.error(e);

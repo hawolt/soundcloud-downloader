@@ -1,12 +1,10 @@
 package com.hawolt.data.media.download.impl;
 
 import com.hawolt.Logger;
-import com.hawolt.Request;
 import com.hawolt.Response;
+import com.hawolt.data.media.MediaLoader;
 import com.hawolt.data.media.download.FileCallback;
 import com.hawolt.data.media.download.IFile;
-
-import java.io.IOException;
 
 /**
  * Created: 09/02/2022 13:01
@@ -34,11 +32,11 @@ public class TrackFragment implements Runnable, IFile {
     @Override
     public void run() {
         try {
-            Request request = new Request(url);
-            Response response = request.execute();
+            MediaLoader loader = new MediaLoader(url);
+            Response response = loader.call();
             this.b = response.getBody();
             callback.onAssembly(index, this);
-        } catch (IOException e) {
+        } catch (Exception e) {
             Logger.error(e);
             callback.onFailure(index, failures++, url);
         }
