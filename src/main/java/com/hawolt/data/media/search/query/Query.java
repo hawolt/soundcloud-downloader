@@ -9,7 +9,7 @@ import java.util.function.Predicate;
  * Author: Twitter @hawolt
  **/
 
-public abstract class Query implements RuleSet {
+public abstract class Query implements RuleSet, UniqueIdentifiable {
     protected BaseQuery<?> baseQuery;
 
     public Query(BaseQuery<?> baseQuery) {

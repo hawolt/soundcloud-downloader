@@ -1,5 +1,6 @@
 package com.hawolt.data.media.search.query.impl;
 
+import com.hawolt.cryptography.SHA256;
 import com.hawolt.data.media.Track;
 import com.hawolt.data.media.search.query.BaseQuery;
 import com.hawolt.data.media.search.query.Query;
@@ -27,6 +28,11 @@ public class TagQuery extends Query {
     @Override
     public String getKeyword() {
         return builder.getTag();
+    }
+
+    @Override
+    public String checksum() {
+        return SHA256.hash(String.join(".", builder.getTag(), baseQuery.checksum()));
     }
 
     public static class Builder {

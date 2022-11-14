@@ -1,15 +1,20 @@
 package com.hawolt.data.media.search.query;
 
+import com.hawolt.cryptography.SHA256;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created: 13/11/2022 19:06
  * Author: Twitter @hawolt
  **/
 
-public class BaseQuery<T> {
+public class BaseQuery<T> implements UniqueIdentifiable {
 
     private final List<String> mandatoryTags = new ArrayList<>();
     private final List<String> optionalTags = new ArrayList<>();
@@ -111,5 +116,24 @@ public class BaseQuery<T> {
 
     public T define(Function<BaseQuery<?>, T> function) {
         return function.apply(this);
+    }
+
+    @Override
+    public String checksum() {
+        BigInteger integer = new BigInteger("0")
+                .add(BigInteger.valueOf(minStream))
+                .add(BigInteger.valueOf(minLike))
+                .add(BigInteger.valueOf(minDuration))
+                .add(BigInteger.valueOf(minTimestamp))
+                .add(BigInteger.valueOf(maxStream))
+                .add(BigInteger.valueOf(maxLike))
+                .add(BigInteger.valueOf(maxDuration))
+                .add(BigInteger.valueOf(maxTimestamp));
+        String plain = Stream.concat(
+                Stream.of(integer.toString()),
+                Stream.of(mandatoryTags, optionalTags)
+                        .flatMap(List::stream)
+        ).collect(Collectors.joining());
+        return SHA256.hash(plain);
     }
 }
