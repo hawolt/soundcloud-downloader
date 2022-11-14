@@ -17,11 +17,11 @@ public class Tags {
         int indexOf;
         while ((indexOf = tagline.indexOf("\"")) != -1) {
             int endIndex = tagline.indexOf("\"", indexOf + 1);
-            list.add(tagline.substring(indexOf + 1, endIndex).toLowerCase());
+            list.add(tagline.substring(indexOf + 1, endIndex));
             tagline = tagline.replace(tagline.substring(indexOf, endIndex + 1), "");
         }
         Collections.addAll(list, tagline.split(" "));
-        list.add(genre.toLowerCase());
+        list.add(genre);
     }
 
     public boolean contains(String tag) {
