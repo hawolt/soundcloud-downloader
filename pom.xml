@@ -68,5 +68,10 @@
             <artifactId>CLI</artifactId>
             <version>64ef2ca392</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.hawolt.hawolt-core</groupId>
+            <artifactId>Cryptography</artifactId>
+            <version>64ef2ca392</version>
+        </dependency>
     </dependencies>
 </project>
