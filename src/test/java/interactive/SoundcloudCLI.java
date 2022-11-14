@@ -1,8 +1,12 @@
 package interactive;
 
-import com.hawolt.*;
+import com.hawolt.cli.Argument;
+import com.hawolt.cli.CLI;
+import com.hawolt.cli.Parser;
+import com.hawolt.cli.ParserException;
 import com.hawolt.data.media.download.FileManager;
 import com.hawolt.data.media.hydratable.Hydratable;
+import com.hawolt.logger.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;

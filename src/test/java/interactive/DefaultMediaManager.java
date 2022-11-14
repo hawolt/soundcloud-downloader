@@ -1,12 +1,11 @@
 package interactive;
 
-import com.hawolt.Logger;
 import com.hawolt.data.SynchronizedInteger;
 import com.hawolt.data.media.MediaManager;
 import com.hawolt.data.media.Track;
 import com.hawolt.data.media.download.FileManager;
+import com.hawolt.logger.Logger;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
