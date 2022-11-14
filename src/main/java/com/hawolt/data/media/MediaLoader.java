@@ -1,5 +1,6 @@
 package com.hawolt.data.media;
 
+import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.http.Request;
 import com.hawolt.http.Response;
 
@@ -27,7 +28,7 @@ public class MediaLoader implements Callable<Response> {
             Request request = new Request(resource);
             response = request.execute();
             if (response.getCode() == 429) {
-                Thread.sleep(random.nextInt(5) * 1000L);
+                Hydratable.snooze(random.nextInt(5) * 1000L);
             }
         } while (response.getCode() == 429);
         return response;
