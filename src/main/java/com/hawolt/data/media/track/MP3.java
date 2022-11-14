@@ -1,12 +1,12 @@
 package com.hawolt.data.media.track;
 
-import com.hawolt.Logger;
-import com.hawolt.Response;
 import com.hawolt.data.VirtualClient;
 import com.hawolt.data.media.MediaLoader;
 import com.hawolt.data.media.Track;
 import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.download.TrackFile;
+import com.hawolt.http.Response;
+import com.hawolt.logger.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 

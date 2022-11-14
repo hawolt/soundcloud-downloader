@@ -1,7 +1,5 @@
 package com.hawolt.data.media;
 
-import com.hawolt.Logger;
-import com.hawolt.Response;
 import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.data.media.hydratable.HydratableInterface;
@@ -9,6 +7,8 @@ import com.hawolt.data.media.hydratable.Hydration;
 import com.hawolt.data.media.impl.MediaAuthorInterface;
 import com.hawolt.data.media.impl.MediaPlaylistInterface;
 import com.hawolt.data.media.impl.MediaTrackInterface;
+import com.hawolt.http.Response;
+import com.hawolt.logger.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

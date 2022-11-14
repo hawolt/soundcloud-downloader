@@ -1,12 +1,12 @@
 package com.hawolt.data.media;
 
-import com.hawolt.Logger;
 import com.hawolt.data.media.download.FileManager;
 import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.data.media.track.MP3;
 import com.hawolt.data.media.track.Media;
 import com.hawolt.data.media.track.Tags;
 import com.hawolt.data.media.track.User;
+import com.hawolt.logger.Logger;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -19,8 +19,6 @@ import java.util.concurrent.CompletableFuture;
  **/
 
 public class Track extends Hydratable {
-
-    public static final long LOADED_AT = System.currentTimeMillis();
 
     private Media media;
     private User user;

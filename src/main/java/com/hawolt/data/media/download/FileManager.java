@@ -1,7 +1,7 @@
 package com.hawolt.data.media.download;
 
-import com.hawolt.Logger;
 import com.hawolt.data.media.Track;
+import com.hawolt.logger.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;

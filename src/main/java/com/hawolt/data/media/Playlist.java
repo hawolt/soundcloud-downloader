@@ -1,9 +1,9 @@
 package com.hawolt.data.media;
 
-import com.hawolt.Logger;
-import com.hawolt.Response;
 import com.hawolt.data.VirtualClient;
 import com.hawolt.data.media.hydratable.Hydratable;
+import com.hawolt.http.Response;
+import com.hawolt.logger.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

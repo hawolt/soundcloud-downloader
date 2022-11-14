@@ -54,9 +54,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.hawolt</groupId>
-            <artifactId>hawolt-core</artifactId>
-            <version>db6c1e9c128</version>
+            <groupId>com.github.hawolt.hawolt-core</groupId>
+            <artifactId>Logger</artifactId>
+            <version>64ef2ca392</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hawolt.hawolt-core</groupId>
+            <artifactId>HTTP</artifactId>
+            <version>64ef2ca392</version>
         </dependency>
     </dependencies>
 </project>

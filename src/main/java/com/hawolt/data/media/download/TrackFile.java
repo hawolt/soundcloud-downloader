@@ -1,10 +1,10 @@
 package com.hawolt.data.media.download;
 
-import com.hawolt.Logger;
 import com.hawolt.data.media.download.impl.TrackFragment;
 import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.data.media.track.EXTM3U;
 import com.hawolt.data.media.track.MP3;
+import com.hawolt.logger.Logger;
 
 import java.util.Arrays;
 import java.util.HashMap;

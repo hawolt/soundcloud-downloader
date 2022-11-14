@@ -1,8 +1,8 @@
 package com.hawolt.data;
 
-import com.hawolt.Logger;
-import com.hawolt.Request;
-import com.hawolt.Response;
+import com.hawolt.http.Request;
+import com.hawolt.http.Response;
+import com.hawolt.logger.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;

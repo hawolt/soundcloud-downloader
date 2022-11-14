@@ -5,6 +5,7 @@ import com.hawolt.data.media.download.FileManager;
 import com.hawolt.data.media.hydratable.Hydratable;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -18,7 +19,8 @@ public class SoundcloudCLI {
 
     public static void main(String[] args) {
         Parser parser = new Parser();
-        parser.add(Argument.create("dl", "download", "resource(s) to download", true, false, false));
+        parser.add(Argument.create("f", "file", "parse links from file", false, true, false));
+        parser.add(Argument.create("dl", "download", "resource(s) to download", false, false, false));
         parser.add(Argument.create("dir", "directory", "directory to save files", false, true, false));
         parser.add(Argument.create("t", "threads", "specify amount of threads", false, true, false));
         try {
@@ -30,9 +32,15 @@ public class SoundcloudCLI {
                 FileManager.setup(Paths.get(cli.getValue("directory")));
             }
             Logger.debug("Setting file directory as \"{}\"", FileManager.path);
-            List<String> resources = cli.get("download");
-            Logger.info("Preparing download for {} element{}", resources.size(), resources.size() == 1 ? "" : "s");
             DefaultMediaManager manager = new DefaultMediaManager();
+            List<String> resources = null;
+            if (cli.has("download")) {
+                resources = cli.get("download");
+            } else if (cli.has("file")) {
+                resources = Files.readAllLines(Paths.get(cli.getValue("file")));
+            }
+            if (resources == null) return;
+            Logger.info("Preparing download for {} element{}", resources.size(), resources.size() == 1 ? "" : "s");
             for (String resource : resources) {
                 manager.load(resource);
             }

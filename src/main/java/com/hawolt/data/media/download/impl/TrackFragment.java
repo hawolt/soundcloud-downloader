@@ -1,10 +1,10 @@
 package com.hawolt.data.media.download.impl;
 
-import com.hawolt.Logger;
-import com.hawolt.Response;
 import com.hawolt.data.media.MediaLoader;
 import com.hawolt.data.media.download.FileCallback;
 import com.hawolt.data.media.download.IFile;
+import com.hawolt.http.Response;
+import com.hawolt.logger.Logger;
 
 /**
  * Created: 09/02/2022 13:01

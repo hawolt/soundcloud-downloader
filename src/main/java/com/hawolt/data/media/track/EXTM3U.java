@@ -1,7 +1,7 @@
 package com.hawolt.data.media.track;
 
-import com.hawolt.Response;
 import com.hawolt.data.media.MediaLoader;
+import com.hawolt.http.Response;
 
 import java.util.HashMap;
 import java.util.LinkedList;

@@ -1,7 +1,7 @@
 package com.hawolt.data.media;
 
-import com.hawolt.Request;
-import com.hawolt.Response;
+import com.hawolt.http.Request;
+import com.hawolt.http.Response;
 
 import java.util.Random;
 import java.util.concurrent.Callable;
