@@ -2,3 +2,4 @@
 target/*
 SoundCloud.iml
 dump/*
+src/test/java/interactive/gitignore/*
