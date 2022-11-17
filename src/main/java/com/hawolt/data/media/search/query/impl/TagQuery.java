@@ -1,10 +1,11 @@
 package com.hawolt.data.media.search.query.impl;
 
 import com.hawolt.cryptography.SHA256;
-import com.hawolt.data.media.Track;
-import com.hawolt.data.media.search.query.BaseQuery;
-import com.hawolt.data.media.search.query.Query;
+import com.hawolt.data.media.hydratable.impl.track.Track;
+import com.hawolt.data.media.search.query.AdvancedQuery;
+import org.json.JSONObject;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -12,52 +13,25 @@ import java.util.function.Predicate;
  * Author: Twitter @hawolt
  **/
 
-public class TagQuery extends Query {
-    private final Builder builder;
+public class TagQuery extends AdvancedQuery {
+    private final String tag;
 
-    public TagQuery(Builder builder) {
-        super(builder.getBaseQuery());
-        this.builder = builder;
-    }
-
-    @Override
-    protected Predicate<Track> getSpecificPredicate() {
-        return track -> track.getTags().contains(builder.getTag());
+    public TagQuery(String tag) {
+        this.tag = tag;
     }
 
     @Override
     public String getKeyword() {
-        return builder.getTag();
+        return tag;
     }
 
     @Override
     public String checksum() {
-        return SHA256.hash(String.join(".", builder.getTag(), baseQuery.checksum()));
+        return SHA256.hash(String.join(getClass().getSimpleName(), tag));
     }
 
-    public static class Builder {
-        private final BaseQuery<?> baseQuery;
-        private String tag;
-
-        public Builder(BaseQuery<?> baseQuery) {
-            this.baseQuery = baseQuery;
-        }
-
-        public BaseQuery<?> getBaseQuery() {
-            return baseQuery;
-        }
-
-        public Builder setTag(String tag) {
-            this.tag = tag;
-            return this;
-        }
-
-        public String getTag() {
-            return tag;
-        }
-
-        public TagQuery build() {
-            return new TagQuery(this);
-        }
+    @Override
+    public Function<JSONObject, Track> getTransformer() {
+        return Track::new;
     }
 }

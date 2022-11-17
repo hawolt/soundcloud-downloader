@@ -1,6 +1,7 @@
 package com.hawolt.data.media.hydratable;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created: 09/02/2022 12:47
@@ -8,7 +9,7 @@ import java.util.concurrent.ExecutorService;
  **/
 
 public class Hydratable {
-    public static ExecutorService EXECUTOR_SERVICE;
+    public static ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
 
     public static void snooze(long ms) {
         try {

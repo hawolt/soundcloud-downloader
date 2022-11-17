@@ -1,4 +1,4 @@
-package com.hawolt.data.media;
+package com.hawolt.data.media.hydratable.impl.track;
 
 import com.hawolt.data.media.download.FileManager;
 import com.hawolt.data.media.hydratable.Hydratable;

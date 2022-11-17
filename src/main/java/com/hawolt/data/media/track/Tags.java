@@ -33,7 +33,7 @@ public class Tags {
     }
 
     public boolean anyMatch(String expression) {
-        return list.stream().filter(tag -> tag.matches(expression)).count() > 0;
+        return list.stream().anyMatch(tag -> tag.matches(expression));
     }
 
     public String toString() {

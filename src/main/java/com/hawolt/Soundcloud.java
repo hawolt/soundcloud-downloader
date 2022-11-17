@@ -1,12 +1,14 @@
-package com.hawolt.data.media;
+package com.hawolt;
 
+import com.hawolt.data.media.MediaInterface;
+import com.hawolt.data.media.MediaLoader;
 import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.data.media.hydratable.HydratableInterface;
 import com.hawolt.data.media.hydratable.Hydration;
-import com.hawolt.data.media.impl.MediaAuthorInterface;
-import com.hawolt.data.media.impl.MediaPlaylistInterface;
-import com.hawolt.data.media.impl.MediaTrackInterface;
+import com.hawolt.data.media.hydratable.impl.playlist.Playlist;
+import com.hawolt.data.media.hydratable.impl.track.Track;
+import com.hawolt.data.media.hydratable.impl.user.User;
 import com.hawolt.http.Response;
 import com.hawolt.logger.Logger;
 import org.json.JSONArray;
@@ -24,16 +26,13 @@ import java.util.concurrent.CompletableFuture;
  **/
 
 public class Soundcloud {
-
-    public static long limit = 20;
-
     private static final Map<String, MediaInterface<? extends Hydratable>> MAPPING = new HashMap<>();
     private static final Map<Class<? extends Hydratable>, List<HydratableInterface<? extends Hydratable>>> MANAGER = new HashMap<>();
 
     static {
-        MAPPING.put("playlist", new MediaPlaylistInterface());
-        MAPPING.put("user", new MediaAuthorInterface());
-        MAPPING.put("sound", new MediaTrackInterface());
+        MAPPING.put("user", (MediaInterface<User>) User::new);
+        MAPPING.put("playlist", (MediaInterface<Playlist>) Playlist::new);
+        MAPPING.put("sound", (MediaInterface<Track>) object -> new Track(object.getJSONObject("data")));
     }
 
     public static void overwrite(String type, MediaInterface<? extends Hydratable> mediaInterface) {
@@ -54,7 +53,7 @@ public class Soundcloud {
         load(link, null);
     }
 
-    static void load(String link, DownloadCallback callback) {
+    public static void load(String link, DownloadCallback callback) {
         Hydratable.EXECUTOR_SERVICE.execute(() -> {
             try {
                 MediaLoader loader = new MediaLoader(link);
@@ -77,7 +76,7 @@ public class Soundcloud {
                     if (e != null) Logger.error(e);
                     if (capture == null) return;
                     for (HydratableInterface<? extends Hydratable> hydratableInterface : MANAGER.get(capture.getClass())) {
-                        hydratableInterface.accept(modify(capture));
+                        hydratableInterface.accept(link, modify(capture));
                     }
                 });
             } catch (Exception e) {

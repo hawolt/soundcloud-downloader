@@ -2,10 +2,11 @@ package com.hawolt.data.media.search.query.impl;
 
 import com.hawolt.cryptography.SHA256;
 import com.hawolt.data.media.hydratable.impl.track.Track;
-import com.hawolt.data.media.search.query.AdvancedQuery;
+import com.hawolt.data.media.hydratable.impl.user.User;
 import com.hawolt.data.media.search.query.Query;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -14,21 +15,26 @@ import java.util.function.Predicate;
  * Author: Twitter @hawolt
  **/
 
-public class SearchQuery extends AdvancedQuery {
-    private final String keyword;
+public class UploadQuery implements Query<Track> {
+    private final long userId;
 
-    public SearchQuery(String keyword) {
-        this.keyword = keyword;
+    public UploadQuery(long userId) {
+        this.userId = userId;
     }
 
     @Override
     public String getKeyword() {
-        return keyword;
+        return String.valueOf(userId);
     }
 
     @Override
     public String checksum() {
-        return SHA256.hash(String.join(getClass().getSimpleName(), keyword));
+        return SHA256.hash(String.join(getClass().getSimpleName(), String.valueOf(userId)));
+    }
+
+    @Override
+    public Predicate<Track> filter() {
+        return track -> true;
     }
 
     @Override

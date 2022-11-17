@@ -1,7 +1,9 @@
-package com.hawolt.data.media;
+package com.hawolt.data.media.hydratable.impl.playlist;
 
 import com.hawolt.data.VirtualClient;
+import com.hawolt.data.media.MediaLoader;
 import com.hawolt.data.media.hydratable.Hydratable;
+import com.hawolt.data.media.hydratable.impl.track.Track;
 import com.hawolt.http.Response;
 import com.hawolt.logger.Logger;
 import org.json.JSONArray;
@@ -18,40 +20,33 @@ import java.util.concurrent.Future;
  * Author: Twitter @hawolt
  **/
 
-public class Playlist extends Hydratable implements Iterable<Track> {
+public class Playlist extends Hydratable implements Iterable<Long> {
 
-    private final List<Track> list = new ArrayList<>();
-
-    public Playlist() {
-    }
+    private final List<Long> list = new ArrayList<>();
 
     public Playlist(JSONObject object) {
         JSONObject data = object.getJSONObject("data");
         JSONArray tracks = data.getJSONArray("tracks");
-        List<MediaLoader> list = new ArrayList<>();
         for (int i = 0; i < tracks.length(); i++) {
             JSONObject track = tracks.getJSONObject(i);
-            long id = track.getLong("id");
-            try {
+            list.add(track.getLong("id"));
+
+          /*  try {
                 String resource = String.format("https://api-v2.soundcloud.com/tracks?ids=%s&client_id=%s", id, VirtualClient.getID());
                 list.add(new MediaLoader(resource));
             } catch (Exception e) {
                 Logger.error(e);
-            }
-        }
-        try {
-            Logger.debug("Loading metadata for playlist with {} element{}", list.size(), list.size() == 1 ? "" : "s");
-            List<Future<Response>> futures = Hydratable.EXECUTOR_SERVICE.invokeAll(list);
-            for (Future<Response> future : futures) {
-                this.list.add(new Track(new JSONArray(future.get().getBodyAsString()).getJSONObject(0)));
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            Logger.error(e);
+            }*/
+            //this.list.add(new Track(new JSONArray(future.get().getBodyAsString()).getJSONObject(0)));
         }
     }
 
+    public List<Long> getList() {
+        return list;
+    }
+
     @Override
-    public Iterator<Track> iterator() {
+    public Iterator<Long> iterator() {
         return list.iterator();
     }
 }

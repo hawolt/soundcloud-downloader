@@ -1,22 +1,16 @@
 package com.hawolt.data.media.search.query;
 
-import com.hawolt.data.media.Track;
+import com.hawolt.data.media.hydratable.impl.track.Track;
 
 import java.util.function.Predicate;
 
 /**
- * Created: 14/11/2022 12:46
+ * Created: 17/11/2022 19:13
  * Author: Twitter @hawolt
  **/
 
-public interface RuleSet {
-    BaseQuery<?> getBaseQuery();
-
-    Predicate<Track> getPredicate();
-
+public interface Ruleset {
     Predicate<Track> getMandatoryTagsPredicate();
-
-    Predicate<Track> getOptionalTagsPredicate();
 
     Predicate<Track> getTimestampPredicate();
 
@@ -25,5 +19,4 @@ public interface RuleSet {
     Predicate<Track> getStreamPredicate();
 
     Predicate<Track> getLikePredicate();
-
 }

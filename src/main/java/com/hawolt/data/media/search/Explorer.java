@@ -2,21 +2,20 @@ package com.hawolt.data.media.search;
 
 import com.hawolt.data.VirtualClient;
 import com.hawolt.data.media.MediaLoader;
-import com.hawolt.data.media.Track;
+import com.hawolt.data.media.search.endpoint.InstructionInterpreter;
+import com.hawolt.data.media.search.query.ObjectCollection;
+import com.hawolt.data.media.search.query.PartialCollection;
 import com.hawolt.data.media.search.query.Query;
-import com.hawolt.data.media.search.query.impl.SearchQuery;
-import com.hawolt.data.media.search.query.impl.TagQuery;
-import com.hawolt.data.media.search.query.TrackCollection;
+import com.hawolt.data.media.search.query.impl.*;
 import com.hawolt.http.Response;
 import com.hawolt.logger.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -24,52 +23,37 @@ import java.util.function.Predicate;
  * Author: Twitter @hawolt
  **/
 
-public class Explorer implements Iterator<TrackCollection> {
+public class Explorer<T> implements Iterator<PartialCollection<T>> {
 
-    private static final ExecutorService executor = Executors.newCachedThreadPool();
-
-    private static final Map<Class<? extends Query>, String> map = new HashMap<Class<? extends Query>, String>() {{
-        put(SearchQuery.class, "https://api-v2.soundcloud.com/search/tracks?q=%s&client_id=%s&limit=50&offset=0&linked_partitioning=1");
-        put(TagQuery.class, "https://api-v2.soundcloud.com/recent-tracks/%s?client_id=%s&limit=50&offset=0&linked_partitioning=1");
+    private static final Map<Class<? extends Query<?>>, String> map = new HashMap<Class<? extends Query<?>>, String>() {{
+        put(SearchQuery.class, "https://api-v2.soundcloud.com/search/tracks?q=%s&offset=0&limit=50&linked_partitioning=1&client_id=$(client)");
+        put(TagQuery.class, "https://api-v2.soundcloud.com/recent-tracks/%s?offset=0&limit=50&linked_partitioning=1&client_id=$(client)");
+        put(FollowingQuery.class, "https://api-v2.soundcloud.com/users/%s/followings?offset=$(timestamp)&limit=200&client_id=$(client)");
+        put(UploadQuery.class, "https://api-v2.soundcloud.com/users/%s/tracks?offset=0&limit=50&client_id=$(client)");
+        put(TrackQuery.class, "https://api-v2.soundcloud.com/tracks?ids=%s&client_id=$(client)");
     }};
 
-    public static Explorer browse(Query query) throws Exception {
+    public static <T> ObjectCollection<T> browse(Query<T> query) throws Exception {
         String base = map.get(query.getClass());
-        String uri = String.format(base, URLEncoder.encode(query.getKeyword(), StandardCharsets.UTF_8.name()), VirtualClient.getID());
+        String uri = String.format(InstructionInterpreter.parse(base), URLEncoder.encode(query.getKeyword(), StandardCharsets.UTF_8.name()));
         Logger.debug("base_href={}", uri);
         MediaLoader loader = new MediaLoader(uri);
         Response response = loader.call();
-        return new Explorer(query.getPredicate(), new JSONObject(response.getBodyAsString()));
+        String body = response.getBodyAsString();
+        boolean array = body.startsWith("[") && body.endsWith("]");
+        String plain = !array ? body : new JSONObject().put("collection", new JSONArray().put(new JSONObject(body.substring(1, body.length() - 1)))).toString();
+        return new ObjectCollection<>(new Explorer<>(query.filter(), query.getTransformer(), new JSONObject(plain)));
     }
 
-    public static CompletableFuture<List<Track>> fetch(Query query) {
-        CompletableFuture<List<Track>> future = new CompletableFuture<>();
-        executor.execute(() -> {
-            try {
-                Explorer explorer = Explorer.browse(query);
-                List<Track> list = new ArrayList<>();
-                do {
-                    TrackCollection history = explorer.next();
-                    for (Track track : history) {
-                        list.add(track);
-                    }
-                } while (explorer.hasNext());
-                list.sort((o1, o2) -> Long.compare(o2.getCreatedAt(), o1.getCreatedAt()));
-                future.complete(list);
-            } catch (Exception e) {
-                future.completeExceptionally(e);
-            }
-        });
-        return future;
-    }
-
-    private final Predicate<Track> predicate;
-    private TrackCollection collection;
+    private final Function<JSONObject, T> transformer;
+    private final Predicate<T> filter;
+    private PartialCollection<T> collection;
     private JSONObject current;
 
-    public Explorer(Predicate<Track> predicate, JSONObject object) {
-        this.predicate = predicate;
+    public Explorer(Predicate<T> filter, Function<JSONObject, T> transformer, JSONObject object) {
+        this.transformer = transformer;
         this.current = object;
+        this.filter = filter;
     }
 
     @Override
@@ -78,10 +62,10 @@ public class Explorer implements Iterator<TrackCollection> {
     }
 
     @Override
-    public TrackCollection next() {
-        TrackCollection collection = new TrackCollection();
+    public PartialCollection<T> next() {
+        PartialCollection<T> collection = new PartialCollection<>(filter, transformer);
         if (this.collection == null) {
-            this.collection = new TrackCollection(current.getJSONArray("collection"));
+            this.collection = new PartialCollection<>(filter, transformer, current.getJSONArray("collection"));
         } else {
             try {
                 this.collection = loadNext();
@@ -89,23 +73,21 @@ public class Explorer implements Iterator<TrackCollection> {
                 Logger.error(e);
             }
         }
-        for (Track track : this.collection) {
-            if (predicate.test(track)) {
-                collection.append(track);
-            }
+        for (T object : this.collection) {
+            collection.append(object);
         }
         return this.collection = collection;
     }
 
-    private TrackCollection loadNext() throws Exception {
+    private PartialCollection<T> loadNext() throws Exception {
         String auth = String.format("client_id=%s", VirtualClient.getID());
         String next = String.join("&", current.getString("next_href"), auth);
         Logger.debug("next_href={}", next);
         MediaLoader loader = new MediaLoader(next);
         Response response = loader.call();
         this.current = new JSONObject(response.getBodyAsString());
-        if (!current.has("collection")) return TrackCollection.EMPTY;
-        return new TrackCollection(current.getJSONArray("collection"));
+        if (!current.has("collection")) return new PartialCollection<>(filter, transformer);
+        return new PartialCollection<>(filter, transformer, current.getJSONArray("collection"));
     }
 
 }

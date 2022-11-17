@@ -2,12 +2,11 @@ package com.hawolt.data.media.track;
 
 import com.hawolt.data.VirtualClient;
 import com.hawolt.data.media.MediaLoader;
-import com.hawolt.data.media.Track;
+import com.hawolt.data.media.hydratable.impl.track.Track;
 import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.download.TrackFile;
 import com.hawolt.http.Response;
 import com.hawolt.logger.Logger;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -21,10 +20,14 @@ public class MP3 {
     private EXTM3U extm3U;
 
     public static MP3 load(Track track, Transcoding... transcodings) {
-        return load(track, 0, transcodings);
+        try {
+            return new MP3(track,  transcodings);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static MP3 load(Track track, int attempt, Transcoding... transcodings) {
+   /* public static MP3 load(Track track, int attempt, Transcoding... transcodings) {
         if (attempt > 10) return null;
         try {
             return new MP3(track, transcodings);
@@ -37,7 +40,7 @@ public class MP3 {
                 return null;
             }
         }
-    }
+    }*/
 
     public MP3(Track track, Transcoding... transcodings) throws Exception {
         this.track = track;

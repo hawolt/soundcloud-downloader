@@ -5,6 +5,6 @@ package com.hawolt.data.media;
  * Author: Twitter @hawolt
  **/
 
-public interface MediaCallback {
-    void ping(Track track);
+public interface ObjectCallback<T> {
+    void ping(String link, T t);
 }

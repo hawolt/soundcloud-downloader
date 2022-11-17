@@ -6,12 +6,15 @@ import com.hawolt.cli.Parser;
 import com.hawolt.cli.ParserException;
 import com.hawolt.data.media.download.FileManager;
 import com.hawolt.data.media.hydratable.Hydratable;
+import com.hawolt.data.media.hydratable.impl.track.Track;
+import com.hawolt.data.media.hydratable.impl.user.User;
 import com.hawolt.logger.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 /**
@@ -36,7 +39,34 @@ public class SoundcloudCLI {
                 FileManager.setup(Paths.get(cli.getValue("directory")));
             }
             Logger.debug("Setting file directory as \"{}\"", FileManager.path);
-            DefaultMediaManager manager = new DefaultMediaManager();
+            AbstractMediaManager manager = new AbstractMediaManager() {
+                @Override
+                public void onUser(String link, User user) {
+                    Logger.debug("Loaded {}:{}", user.getUserId(), link);
+                }
+
+                @Override
+                public void onTrack(Track track, byte[] b) {
+                    store(track, b);
+                    Logger.info("Completed download for {}.mp3", track.getPermalink());
+                }
+
+                @Override
+                public void onPlaylist(String link, Map<Track, byte[]> playlist) {
+                    for (Map.Entry<Track, byte[]> entry : playlist.entrySet()) {
+                        store(entry.getKey(), entry.getValue());
+                    }
+                    Logger.info("Completed download for playlist {}", link);
+                }
+
+                private void store(Track track, byte[] b) {
+                    FileManager.store(track, b).whenComplete((file, fex) -> {
+                        if (fex != null) {
+                            Logger.error(fex);
+                        }
+                    });
+                }
+            };
             List<String> resources = null;
             if (cli.has("download")) {
                 resources = cli.get("download");
