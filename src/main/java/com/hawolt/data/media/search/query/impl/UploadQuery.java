@@ -2,11 +2,9 @@ package com.hawolt.data.media.search.query.impl;
 
 import com.hawolt.cryptography.SHA256;
 import com.hawolt.data.media.hydratable.impl.track.Track;
-import com.hawolt.data.media.hydratable.impl.user.User;
 import com.hawolt.data.media.search.query.Query;
 import org.json.JSONObject;
 
-import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 

@@ -1,6 +1,5 @@
 package com.hawolt.data.media.search.endpoint.impl;
 
-import com.hawolt.data.VirtualClient;
 import com.hawolt.data.media.search.endpoint.AbstractInstruction;
 
 public class SubstituteInstruction extends AbstractInstruction {

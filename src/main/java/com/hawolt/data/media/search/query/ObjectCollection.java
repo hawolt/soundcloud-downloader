@@ -1,13 +1,10 @@
 package com.hawolt.data.media.search.query;
 
 import com.hawolt.data.media.search.Explorer;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Created: 15/11/2022 11:25

@@ -1,10 +1,10 @@
 package interactive;
 
 import com.hawolt.Soundcloud;
+import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.hydratable.impl.playlist.Playlist;
 import com.hawolt.data.media.hydratable.impl.playlist.PlaylistManager;
 import com.hawolt.data.media.hydratable.impl.track.Track;
-import com.hawolt.data.media.download.DownloadCallback;
 import com.hawolt.data.media.hydratable.impl.track.TrackManager;
 import com.hawolt.data.media.hydratable.impl.user.User;
 import com.hawolt.data.media.hydratable.impl.user.UserManager;
@@ -13,7 +13,9 @@ import com.hawolt.data.media.search.query.ObjectCollection;
 import com.hawolt.data.media.search.query.impl.TrackQuery;
 import com.hawolt.logger.Logger;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created: 15/11/2022 17:36

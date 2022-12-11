@@ -1,11 +1,8 @@
 package com.hawolt.data.media.search.query.impl;
 
 import com.hawolt.cryptography.SHA256;
-import com.hawolt.data.media.hydratable.impl.playlist.Playlist;
 import com.hawolt.data.media.hydratable.impl.track.Track;
-import com.hawolt.data.media.hydratable.impl.user.User;
 import com.hawolt.data.media.search.query.Query;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.function.Function;

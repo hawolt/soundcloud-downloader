@@ -6,7 +6,6 @@ import com.hawolt.data.media.search.query.AdvancedQuery;
 import org.json.JSONObject;
 
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * Created: 13/11/2022 19:17
