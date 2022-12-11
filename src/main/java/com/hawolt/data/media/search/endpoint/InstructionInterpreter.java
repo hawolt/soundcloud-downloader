@@ -1,6 +1,7 @@
 package com.hawolt.data.media.search.endpoint;
 
 import com.hawolt.data.media.search.endpoint.impl.ClientInstruction;
+import com.hawolt.data.media.search.endpoint.impl.SubstituteInstruction;
 import com.hawolt.data.media.search.endpoint.impl.TimestampInstruction;
 
 import java.util.Arrays;
@@ -16,6 +17,7 @@ public class InstructionInterpreter {
     private static final Map<String, Instruction> INSTRUCTION_MAP = new HashMap<>();
 
     static {
+        INSTRUCTION_MAP.put("substitute", new SubstituteInstruction());
         INSTRUCTION_MAP.put("timestamp", new TimestampInstruction());
         INSTRUCTION_MAP.put("client", new ClientInstruction());
     }

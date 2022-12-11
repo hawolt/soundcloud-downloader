@@ -23,22 +23,26 @@ import java.util.concurrent.Future;
 public class Playlist extends Hydratable implements Iterable<Long> {
 
     private final List<Long> list = new ArrayList<>();
+    private final String secret;
+    private final long id;
 
     public Playlist(JSONObject object) {
         JSONObject data = object.getJSONObject("data");
+        this.id = data.getLong("id");
+        this.secret = data.isNull("secret_token") ? "" : data.getString("secret_token");
         JSONArray tracks = data.getJSONArray("tracks");
         for (int i = 0; i < tracks.length(); i++) {
             JSONObject track = tracks.getJSONObject(i);
             list.add(track.getLong("id"));
-
-          /*  try {
-                String resource = String.format("https://api-v2.soundcloud.com/tracks?ids=%s&client_id=%s", id, VirtualClient.getID());
-                list.add(new MediaLoader(resource));
-            } catch (Exception e) {
-                Logger.error(e);
-            }*/
-            //this.list.add(new Track(new JSONArray(future.get().getBodyAsString()).getJSONObject(0)));
         }
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public List<Long> getList() {

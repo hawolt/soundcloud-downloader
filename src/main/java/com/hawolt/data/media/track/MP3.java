@@ -16,38 +16,27 @@ import org.json.JSONObject;
 
 public class MP3 {
 
+    private final String authorization;
     private final Track track;
     private EXTM3U extm3U;
 
-    public static MP3 load(Track track, Transcoding... transcodings) {
+    public static MP3 load(Track track, String authorization, Transcoding... transcodings) {
         try {
-            return new MP3(track,  transcodings);
+            return new MP3(track, authorization, transcodings);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-   /* public static MP3 load(Track track, int attempt, Transcoding... transcodings) {
-        if (attempt > 10) return null;
-        try {
-            return new MP3(track, transcodings);
-        } catch (Exception e) {
-            if (e instanceof JSONException) {
-                Logger.error(e.getMessage());
-                return load(track, ++attempt, transcodings);
-            } else {
-                System.out.println("null bro");
-                return null;
-            }
-        }
-    }*/
-
-    public MP3(Track track, Transcoding... transcodings) throws Exception {
+    public MP3(Track track, String authorization, Transcoding... transcodings) throws Exception {
         this.track = track;
+        this.authorization = authorization;
         for (Transcoding transcoding : transcodings) {
             if (transcoding.getProtocol().equalsIgnoreCase("hls")) {
-                String auth = String.join("=", "client_id", VirtualClient.getID());
-                String resource = String.join("?", transcoding.getUrl(), auth);
+                String client = String.join("=", "client_id", VirtualClient.getID());
+                String auth = String.join("=", "track_authorization", authorization);
+                String parameters = String.join("&", client, auth);
+                String resource = String.join(transcoding.getUrl().contains("?") ? "&" : "?", transcoding.getUrl(), parameters);
                 Logger.debug("stream for track {} at resource {}", track.getId(), resource);
                 MediaLoader loader = new MediaLoader(resource);
                 Response response = loader.call();
@@ -56,6 +45,7 @@ public class MP3 {
                 break;
             }
         }
+
     }
 
     public Track getTrack() {

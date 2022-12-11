@@ -24,7 +24,7 @@ public class Track extends Hydratable {
     private User user;
     private Tags tags;
 
-    private String description, title, genre, link, permalink, artwork;
+    private String description, title, genre, link, permalink, artwork, authorization;
     private int likeCount, commentCount, playbackCount;
     private final long id;
     private long duration, createdAt;
@@ -34,6 +34,7 @@ public class Track extends Hydratable {
     }
 
     public Track(JSONObject o) {
+        this.authorization = o.isNull("track_authorization") ? null : o.getString("track_authorization");
         this.media = new Media(o.getJSONObject("media"));
         this.user = new User(o.getJSONObject("user"));
         this.description = !o.isNull("description") ? o.getString("description") : "";
@@ -53,7 +54,11 @@ public class Track extends Hydratable {
     }
 
     public CompletableFuture<MP3> retrieveMP3() {
-        return CompletableFuture.supplyAsync(() -> MP3.load(this, media.getTranscoding()), Hydratable.EXECUTOR_SERVICE);
+        return CompletableFuture.supplyAsync(() -> MP3.load(this, authorization, media.getTranscoding()), Hydratable.EXECUTOR_SERVICE);
+    }
+
+    public String getAuthorization() {
+        return authorization;
     }
 
     public boolean isCached() {

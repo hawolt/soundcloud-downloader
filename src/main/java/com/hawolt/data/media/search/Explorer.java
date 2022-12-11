@@ -35,6 +35,12 @@ public class Explorer<T> implements Iterator<PartialCollection<T>> {
 
     public static <T> ObjectCollection<T> browse(Query<T> query) throws Exception {
         String base = map.get(query.getClass());
+        if (query instanceof TrackQuery) {
+            TrackQuery trackQuery = (TrackQuery) query;
+            String playlistId = "playlistId=$(substitute " + trackQuery.getPlaylistId() + ")";
+            String playlistSecretToken = "playlistSecretToken=$(substitute " + trackQuery.getSecret() + ")";
+            base = String.join("&", base, playlistId, playlistSecretToken);
+        }
         String uri = String.format(InstructionInterpreter.parse(base), URLEncoder.encode(query.getKeyword(), StandardCharsets.UTF_8.name()));
         Logger.debug("base_href={}", uri);
         MediaLoader loader = new MediaLoader(uri);
