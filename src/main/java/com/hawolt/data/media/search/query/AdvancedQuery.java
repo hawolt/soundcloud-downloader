@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * Author: Twitter @hawolt
  **/
 
-public abstract class AdvancedQuery implements Ruleset, Query<Track> {
+public abstract class AdvancedQuery implements RuleSet, Query<Track> {
     private final List<String> mandatoryTags = new ArrayList<>();
     private long minStream, minLike, minDuration, minTimestamp,
             maxTimestamp = Long.MAX_VALUE,
