@@ -5,11 +5,11 @@ import com.hawolt.data.media.hydratable.impl.track.Track;
 import java.util.function.Predicate;
 
 /**
- * Created: 17/11/2022 19:13
+ * Created: 14/12/2022 13:44
  * Author: Twitter @hawolt
  **/
 
-public interface Ruleset {
+public interface RuleSet {
     Predicate<Track> getMandatoryTagsPredicate();
 
     Predicate<Track> getTimestampPredicate();
