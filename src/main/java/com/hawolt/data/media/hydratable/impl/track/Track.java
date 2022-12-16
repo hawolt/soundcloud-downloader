@@ -24,7 +24,7 @@ public class Track extends Hydratable {
     private User user;
     private Tags tags;
 
-    private String description, title, genre, link, permalink, artwork, authorization;
+    private String description, title, genre, link, permalink, artwork, authorization, uri;
     private int likeCount, commentCount, playbackCount;
     private final long id;
     private long duration, createdAt;
@@ -41,6 +41,7 @@ public class Track extends Hydratable {
         this.title = o.getString("title");
         this.genre = !o.isNull("genre") ? o.getString("genre") : "";
         this.permalink = !o.isNull("permalink") ? o.getString("permalink") : "";
+        this.uri = !o.isNull("uri") ? o.getString("uri") : "";
         this.artwork = !o.isNull("artwork_url") ? o.getString("artwork_url") : null;
         this.link = o.getString("permalink_url");
         this.tags = new Tags(genre, o.getString("tag_list"));
@@ -59,6 +60,10 @@ public class Track extends Hydratable {
 
     public String getAuthorization() {
         return authorization;
+    }
+
+    public String getUri() {
+        return uri;
     }
 
     public boolean isCached() {
