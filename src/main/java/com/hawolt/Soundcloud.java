@@ -80,7 +80,7 @@ public class Soundcloud {
                     }
                 });
             } catch (Exception e) {
-                if (callback == null) Logger.error(e.getMessage());
+                if (callback == null) Logger.error("{} {}", e.getMessage(), link);
                 else callback.onLoadFailure(link, e);
             }
         });

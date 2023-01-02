@@ -21,6 +21,8 @@ public class MediaLoader implements Callable<Response> {
         this.resource = resource;
     }
 
+    private int duration = 1;
+
     @Override
     public Response call() throws Exception {
         Response response;
@@ -28,7 +30,7 @@ public class MediaLoader implements Callable<Response> {
             Request request = new Request(resource);
             response = request.execute();
             if (response.getCode() == 429) {
-                Hydratable.snooze(random.nextInt(5) * 1000L);
+                Hydratable.snooze((duration *= 3) * 1000L);
             }
         } while (response.getCode() == 429);
         return response;
