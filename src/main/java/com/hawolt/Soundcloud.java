@@ -53,7 +53,8 @@ public class Soundcloud {
         load(link, null);
     }
 
-    public static void load(String link, DownloadCallback callback) {
+    public static void load(String source, DownloadCallback callback) {
+        String link = source.split("\\?")[0];
         Hydratable.EXECUTOR_SERVICE.execute(() -> {
             try {
                 MediaLoader loader = new MediaLoader(link);
