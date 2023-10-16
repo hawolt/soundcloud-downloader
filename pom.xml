@@ -6,7 +6,7 @@
 
     <groupId>com.hawolt</groupId>
     <artifactId>Soundcloud</artifactId>
-    <version>1.1</version>
+    <version>1.11</version>
 
     <build>
         <plugins>
@@ -56,27 +56,27 @@
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>Logger</artifactId>
-            <version>64ef2ca392</version>
+            <version>a8cfb4edc0</version>
         </dependency>
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>HTTP</artifactId>
-            <version>64ef2ca392</version>
+            <version>a8cfb4edc0</version>
         </dependency>
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>CLI</artifactId>
-            <version>64ef2ca392</version>
+            <version>a8cfb4edc0</version>
         </dependency>
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>Cryptography</artifactId>
-            <version>64ef2ca392</version>
+            <version>a8cfb4edc0</version>
         </dependency>
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>Common</artifactId>
-            <version>64ef2ca392</version>
+            <version>a8cfb4edc0</version>
         </dependency>
     </dependencies>
 </project>
