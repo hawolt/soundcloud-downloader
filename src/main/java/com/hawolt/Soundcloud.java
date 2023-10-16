@@ -55,6 +55,7 @@ public class Soundcloud {
 
     public static void load(String source, DownloadCallback callback) {
         String link = source.split("\\?")[0];
+        Logger.debug("Track {}", link);
         Hydratable.EXECUTOR_SERVICE.execute(() -> {
             try {
                 MediaLoader loader = new MediaLoader(link);
@@ -73,9 +74,11 @@ public class Soundcloud {
                         "playlist" : available.containsKey("user") ?
                         "user" : null;
                 if (hydratable == null) return;
+                Logger.debug("Hydratable {} for {}", hydratable, link);
                 CompletableFuture.supplyAsync(() -> MAPPING.get(hydratable).convert(available.get(hydratable))).whenComplete((capture, e) -> {
                     if (e != null) Logger.error(e);
                     if (capture == null) return;
+                    Logger.debug("Forward {} for {}", hydratable, link);
                     for (HydratableInterface<? extends Hydratable> hydratableInterface : MANAGER.get(capture.getClass())) {
                         hydratableInterface.accept(link, modify(capture));
                     }
