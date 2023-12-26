@@ -41,7 +41,11 @@ public class Explorer<T> implements Iterator<PartialCollection<T>> {
             TrackQuery trackQuery = (TrackQuery) query;
             String playlistId = "playlistId=$(substitute " + trackQuery.getPlaylistId() + ")";
             String playlistSecretToken = "playlistSecretToken=$(substitute " + trackQuery.getSecret() + ")";
-            base = String.join("&", base, playlistId, playlistSecretToken);
+            if (trackQuery.getSecret() == null || trackQuery.getSecret().isEmpty()) {
+                base = String.join("&", base, playlistId);
+            } else {
+                base = String.join("&", base, playlistId, playlistSecretToken);
+            }
         }
         String uri = String.format(InstructionInterpreter.parse(base), URLEncoder.encode(query.getKeyword(), StandardCharsets.UTF_8.name()));
         Logger.debug("base_href={}", uri);
