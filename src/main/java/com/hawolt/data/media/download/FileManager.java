@@ -49,7 +49,7 @@ public class FileManager {
 
     public static CompletableFuture<File> store(Track track, byte[] b) {
         return CompletableFuture.supplyAsync(() -> {
-            String filename = String.format("%s.mp3", track.getPermalink());
+            String filename = String.format("%s.%s.mp3", track.getUser().getPermalink(), track.getPermalink());
             File file = FileManager.path.resolve(filename).toFile();
             try (FileOutputStream stream = new FileOutputStream(file)) {
                 stream.write(b);
