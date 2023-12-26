@@ -56,12 +56,11 @@ public class TrackFile implements IFile, FileCallback {
 
     @Override
     public void onAssembly(int index, IFile file) {
+        Logger.debug("Downloaded fragment [{}/{}] of {}", index, map.size() - 1, mp3.getTrack().getPermalink());
         if (++fragments == map.size()) {
             Logger.debug("Assembled track {}", mp3.getTrack().getPermalink());
             final byte[] bytes = getBytes();
             callback.onCompletion(mp3.getTrack(), bytes);
-        } else {
-            Logger.debug("Downloaded fragment [{}/{}] of {}", index, map.size(), mp3.getTrack().getPermalink());
         }
     }
 
