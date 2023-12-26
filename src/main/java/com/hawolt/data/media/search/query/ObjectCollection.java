@@ -11,23 +11,10 @@ import java.util.List;
  * Author: Twitter @hawolt
  **/
 
-public class ObjectCollection<T> implements Iterable<T> {
-
-    private final List<T> list = new ArrayList<>();
+public abstract class ObjectCollection<T> implements Iterable<T> {
+    protected final Explorer<T> explorer;
 
     public ObjectCollection(Explorer<T> explorer) {
-        while (explorer.hasNext()) {
-            PartialCollection<T> partialCollection = explorer.next();
-            list.addAll(partialCollection.getList());
-        }
-    }
-
-    public List<T> getList() {
-        return list;
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        return list.iterator();
+        this.explorer = explorer;
     }
 }

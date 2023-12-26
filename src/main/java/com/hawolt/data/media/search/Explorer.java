@@ -3,9 +3,7 @@ package com.hawolt.data.media.search;
 import com.hawolt.data.VirtualClient;
 import com.hawolt.data.media.MediaLoader;
 import com.hawolt.data.media.search.endpoint.InstructionInterpreter;
-import com.hawolt.data.media.search.query.ObjectCollection;
-import com.hawolt.data.media.search.query.PartialCollection;
-import com.hawolt.data.media.search.query.Query;
+import com.hawolt.data.media.search.query.*;
 import com.hawolt.data.media.search.query.impl.*;
 import com.hawolt.http.Response;
 import com.hawolt.logger.Logger;
@@ -35,7 +33,7 @@ public class Explorer<T> implements Iterator<PartialCollection<T>> {
         put(TrackQuery.class, "https://api-v2.soundcloud.com/tracks?ids=%s&client_id=$(client)");
     }};
 
-    public static <T> ObjectCollection<T> browse(Query<T> query) throws Exception {
+    private static <T> Explorer<T> explore(Query<T> query) throws Exception {
         String base = map.get(query.getClass());
         if (query instanceof TrackQuery) {
             TrackQuery trackQuery = (TrackQuery) query;
@@ -54,7 +52,15 @@ public class Explorer<T> implements Iterator<PartialCollection<T>> {
         String body = response.getBodyAsString();
         boolean array = body.startsWith("[") && body.endsWith("]");
         String plain = !array ? body : new JSONObject().put("collection", new JSONArray().put(new JSONObject(body.substring(1, body.length() - 1)))).toString();
-        return new ObjectCollection<>(new Explorer<>(query.filter(), query.getTransformer(), new JSONObject(plain)));
+        return new Explorer<>(query.filter(), query.getTransformer(), new JSONObject(plain));
+    }
+
+    public static <T> LazyObjectCollection<T> browse(Query<T> query) throws Exception {
+        return new LazyObjectCollection<>(explore(query));
+    }
+
+    public static <T> CompleteObjectCollection<T> search(Query<T> query) throws Exception {
+        return new CompleteObjectCollection<>(explore(query));
     }
 
     private final Function<JSONObject, T> transformer;
