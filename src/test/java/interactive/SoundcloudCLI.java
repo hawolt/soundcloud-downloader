@@ -48,7 +48,7 @@ public class SoundcloudCLI {
                 @Override
                 public void onTrack(Track track, byte[] b) {
                     store(track, b);
-                    Logger.info("Completed download for {}.mp3", track.getPermalink());
+                    Logger.info("Completed download for {}", String.format("%s.%s.mp3", track.getUser().getPermalink(), track.getPermalink()));
                 }
 
                 @Override
