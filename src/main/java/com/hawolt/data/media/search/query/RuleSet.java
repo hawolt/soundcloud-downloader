@@ -10,6 +10,15 @@ import java.util.function.Predicate;
  **/
 
 public interface RuleSet {
+
+    Predicate<Track> getMaximumTagThresholdPredicate();
+
+    Predicate<Track> getBlacklistedUserPredicate();
+
+    Predicate<Track> getBlacklistedTagsPredicate();
+
+    Predicate<Track> getAuthenticUserPredicate();
+
     Predicate<Track> getMandatoryTagsPredicate();
 
     Predicate<Track> getTimestampPredicate();
