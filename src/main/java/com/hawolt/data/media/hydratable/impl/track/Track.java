@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
  **/
 
 public class Track extends Hydratable {
-
+    private final long timestamp = System.currentTimeMillis();
     private Media media;
     private User user;
     private Tags tags;
@@ -151,4 +151,7 @@ public class Track extends Hydratable {
         return Long.hashCode(id);
     }
 
+    public long getObjectTimestamp() {
+        return timestamp;
+    }
 }
