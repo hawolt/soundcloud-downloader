@@ -14,10 +14,16 @@ import java.util.function.Predicate;
  **/
 
 public class UploadQuery implements Query<Track> {
+    private final long timestamp;
     private final long userId;
 
-    public UploadQuery(long userId) {
+    public UploadQuery(long timestamp, long userId) {
+        this.timestamp = timestamp;
         this.userId = userId;
+    }
+
+    public UploadQuery(long userId) {
+        this(System.currentTimeMillis(), userId);
     }
 
     @Override
@@ -37,6 +43,6 @@ public class UploadQuery implements Query<Track> {
 
     @Override
     public Function<JSONObject, Track> getTransformer() {
-        return Track::new;
+        return object -> new Track(timestamp, object);
     }
 }

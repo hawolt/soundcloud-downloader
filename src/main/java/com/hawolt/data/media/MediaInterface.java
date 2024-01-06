@@ -9,5 +9,5 @@ import org.json.JSONObject;
  **/
 
 public interface MediaInterface<T extends Hydratable> {
-    T convert(JSONObject object);
+    T convert(long timestamp, JSONObject object);
 }

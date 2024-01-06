@@ -30,9 +30,9 @@ public class Soundcloud {
     private static final Map<Class<? extends Hydratable>, List<HydratableInterface<? extends Hydratable>>> MANAGER = new HashMap<>();
 
     static {
-        MAPPING.put("user", (MediaInterface<User>) User::new);
-        MAPPING.put("playlist", (MediaInterface<Playlist>) Playlist::new);
-        MAPPING.put("sound", (MediaInterface<Track>) object -> new Track(object.getJSONObject("data")));
+        MAPPING.put("user", User::new);
+        MAPPING.put("playlist", Playlist::new);
+        MAPPING.put("sound", (timestamp, object) -> new Track(timestamp, object.getJSONObject("data")));
     }
 
     public static void overwrite(String type, MediaInterface<? extends Hydratable> mediaInterface) {
@@ -75,14 +75,15 @@ public class Soundcloud {
                         "user" : null;
                 if (hydratable == null) return;
                 Logger.debug("Hydratable {} for {}", hydratable, link);
-                CompletableFuture.supplyAsync(() -> MAPPING.get(hydratable).convert(available.get(hydratable))).whenComplete((capture, e) -> {
-                    if (e != null) Logger.error(e);
-                    if (capture == null) return;
-                    Logger.debug("Forward {} for {}", hydratable, link);
-                    for (HydratableInterface<? extends Hydratable> hydratableInterface : MANAGER.get(capture.getClass())) {
-                        hydratableInterface.accept(link, modify(capture));
-                    }
-                });
+                CompletableFuture.supplyAsync(() -> MAPPING.get(hydratable).convert(System.currentTimeMillis(), available.get(hydratable)))
+                        .whenComplete((capture, e) -> {
+                            if (e != null) Logger.error(e);
+                            if (capture == null) return;
+                            Logger.debug("Forward {} for {}", hydratable, link);
+                            for (HydratableInterface<? extends Hydratable> hydratableInterface : MANAGER.get(capture.getClass())) {
+                                hydratableInterface.accept(link, modify(capture));
+                            }
+                        });
             } catch (Exception e) {
                 if (callback == null) Logger.error("{} {}", e.getMessage(), link);
                 else callback.onLoadFailure(link, e);

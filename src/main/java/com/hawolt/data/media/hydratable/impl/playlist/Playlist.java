@@ -14,12 +14,12 @@ import java.util.List;
  **/
 
 public class Playlist extends Hydratable implements Iterable<Long> {
-    private final long timestamp = System.currentTimeMillis();
     private final List<Long> list = new ArrayList<>();
     private final String secret;
     private final long id;
 
-    public Playlist(JSONObject object) {
+    public Playlist(long timestamp, JSONObject object) {
+        super(timestamp);
         JSONObject data = object.getJSONObject("data");
         this.id = data.getLong("id");
         this.secret = data.isNull("secret_token") ? "" : data.getString("secret_token");
@@ -45,9 +45,5 @@ public class Playlist extends Hydratable implements Iterable<Long> {
     @Override
     public Iterator<Long> iterator() {
         return list.iterator();
-    }
-
-    public long getObjectTimestamp() {
-        return timestamp;
     }
 }

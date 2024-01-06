@@ -14,14 +14,20 @@ import java.util.function.Predicate;
  **/
 
 public class TrackQuery implements Query<Track> {
+    private final long timestamp;
     private final long playlistId;
     private final long trackId;
     private final String secret;
 
-    public TrackQuery(long trackId, long playlistId, String secret) {
-        this.trackId = trackId;
+    public TrackQuery(long timestamp, long trackId, long playlistId, String secret) {
         this.playlistId = playlistId;
+        this.timestamp = timestamp;
+        this.trackId = trackId;
         this.secret = secret;
+    }
+
+    public TrackQuery(long trackId, long playlistId, String secret) {
+        this(System.currentTimeMillis(), trackId, playlistId, secret);
     }
 
     public TrackQuery(long trackId) {
@@ -53,6 +59,6 @@ public class TrackQuery implements Query<Track> {
 
     @Override
     public Function<JSONObject, Track> getTransformer() {
-        return Track::new;
+        return object -> new Track(timestamp, object);
     }
 }

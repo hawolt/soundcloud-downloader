@@ -42,7 +42,12 @@ public abstract class AbstractMediaManager implements DownloadCallback, Playlist
         tracker.store(link, playlist);
         for (long id : playlist) {
             try {
-                TrackQuery query = new TrackQuery(id, playlist.getId(), playlist.getSecret());
+                TrackQuery query = new TrackQuery(
+                        playlist.getLoadReferenceTimestamp(),
+                        id,
+                        playlist.getId(),
+                        playlist.getSecret()
+                );
                 ObjectCollection<Track> collection = Explorer.browse(query);
                 for (Track track : collection) {
                     load(track.getLink());

@@ -13,10 +13,16 @@ import java.util.function.Function;
  **/
 
 public class TagQuery extends AdvancedQuery {
+    private final long timestamp;
     private final String tag;
 
-    public TagQuery(String tag) {
+    public TagQuery(long timestamp, String tag) {
+        this.timestamp = timestamp;
         this.tag = tag;
+    }
+
+    public TagQuery(String tag) {
+        this(System.currentTimeMillis(), tag);
     }
 
     @Override
@@ -31,6 +37,6 @@ public class TagQuery extends AdvancedQuery {
 
     @Override
     public Function<JSONObject, Track> getTransformer() {
-        return Track::new;
+        return object -> new Track(timestamp, object);
     }
 }

@@ -1,6 +1,7 @@
 package com.hawolt.data.media.search.query.impl;
 
 import com.hawolt.cryptography.SHA256;
+import com.hawolt.data.media.hydratable.impl.track.Track;
 import com.hawolt.data.media.hydratable.impl.user.User;
 import com.hawolt.data.media.search.query.Query;
 import org.json.JSONObject;
@@ -14,10 +15,16 @@ import java.util.function.Predicate;
  **/
 
 public class FollowingQuery implements Query<User> {
+    private final long timestamp;
     private final long userId;
 
-    public FollowingQuery(long userId) {
+    public FollowingQuery(long timestamp, long userId) {
+        this.timestamp = timestamp;
         this.userId = userId;
+    }
+
+    public FollowingQuery(long userId) {
+        this(System.currentTimeMillis(), userId);
     }
 
     @Override
@@ -38,6 +45,6 @@ public class FollowingQuery implements Query<User> {
 
     @Override
     public Function<JSONObject, User> getTransformer() {
-        return User::new;
+        return object -> new User(timestamp, object);
     }
 }

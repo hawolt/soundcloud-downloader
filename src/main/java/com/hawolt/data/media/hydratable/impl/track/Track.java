@@ -19,7 +19,6 @@ import java.util.concurrent.CompletableFuture;
  **/
 
 public class Track extends Hydratable {
-    private final long timestamp = System.currentTimeMillis();
     private Media media;
     private User user;
     private Tags tags;
@@ -29,11 +28,13 @@ public class Track extends Hydratable {
     private final long id;
     private long duration, createdAt;
 
-    public Track(long t) {
+    public Track(long timestamp, long t) {
+        super(timestamp);
         this.id = t;
     }
 
-    public Track(JSONObject o) {
+    public Track(long timestamp, JSONObject o) {
+        super(timestamp);
         this.waveform = o.isNull("waveform_url") ? null : o.getString("waveform_url");
         this.authorization = o.isNull("track_authorization") ? null : o.getString("track_authorization");
         this.media = new Media(o.getJSONObject("media"));
@@ -149,9 +150,5 @@ public class Track extends Hydratable {
     @Override
     public int hashCode() {
         return Long.hashCode(id);
-    }
-
-    public long getObjectTimestamp() {
-        return timestamp;
     }
 }
