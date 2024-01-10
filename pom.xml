@@ -56,27 +56,27 @@
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>Logger</artifactId>
-            <version>394df4402c</version>
+            <version>c98b4d7924</version>
         </dependency>
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>HTTP</artifactId>
-            <version>394df4402c</version>
+            <version>c98b4d7924</version>
         </dependency>
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>CLI</artifactId>
-            <version>394df4402c</version>
+            <version>c98b4d7924</version>
         </dependency>
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>Cryptography</artifactId>
-            <version>394df4402c</version>
+            <version>c98b4d7924</version>
         </dependency>
         <dependency>
             <groupId>com.github.hawolt.hawolt-core</groupId>
             <artifactId>Common</artifactId>
-            <version>394df4402c</version>
+            <version>c98b4d7924</version>
         </dependency>
     </dependencies>
 </project>
