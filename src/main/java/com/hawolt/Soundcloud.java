@@ -1,5 +1,6 @@
 package com.hawolt;
 
+import com.hawolt.data.VirtualClient;
 import com.hawolt.data.media.MediaInterface;
 import com.hawolt.data.media.MediaLoader;
 import com.hawolt.data.media.download.DownloadCallback;
@@ -14,10 +15,7 @@ import com.hawolt.logger.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -89,5 +87,24 @@ public class Soundcloud {
                 else callback.onLoadFailure(link, e);
             }
         });
+    }
+
+    public static List<Track> getRelatedAudio(Track track) throws Exception {
+        return getRelatedAudio(track.getId());
+    }
+
+    public static List<Track> getRelatedAudio(long trackId) throws Exception {
+        String base = "https://api-v2.soundcloud.com/tracks/%s/related?client_id=%s&limit=10&offset=0";
+        String url = String.format(base, trackId, VirtualClient.getID());
+        MediaLoader loader = new MediaLoader(url);
+        Response response = loader.call();
+        JSONObject root = new JSONObject(response.getBodyAsString());
+        JSONArray collection = root.getJSONArray("collection");
+        List<Track> list = new LinkedList<>();
+        long timestamp = System.currentTimeMillis();
+        for (int i = 0; i < collection.length(); i++) {
+            list.add(new Track(timestamp, collection.getJSONObject(i)));
+        }
+        return list;
     }
 }
