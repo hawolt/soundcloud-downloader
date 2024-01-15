@@ -30,6 +30,7 @@ public class Explorer<T> implements Iterator<PartialCollection<T>> {
         put(TagQuery.class, "https://api-v2.soundcloud.com/recent-tracks/%s?offset=0&limit=50&linked_partitioning=1&client_id=$(client)");
         put(FollowingQuery.class, "https://api-v2.soundcloud.com/users/%s/followings?offset=$(timestamp)&limit=200&client_id=$(client)");
         put(UploadQuery.class, "https://api-v2.soundcloud.com/users/%s/tracks?offset=0&limit=50&client_id=$(client)");
+        put(LikeQuery.class, "https://api-v2.soundcloud.com/users/%s/likes?offset=0&limit=50&client_id=$(client)");
         put(TrackQuery.class, "https://api-v2.soundcloud.com/tracks?ids=%s&client_id=$(client)");
     }};
 
@@ -44,6 +45,8 @@ public class Explorer<T> implements Iterator<PartialCollection<T>> {
             } else {
                 base = String.join("&", base, playlistId, playlistSecretToken);
             }
+        } else if (query instanceof LikeQuery) {
+
         }
         String uri = String.format(InstructionInterpreter.parse(base), URLEncoder.encode(query.getKeyword(), StandardCharsets.UTF_8.name()));
         Logger.debug("base_href={}", uri);

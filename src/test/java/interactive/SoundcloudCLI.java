@@ -8,6 +8,8 @@ import com.hawolt.data.media.download.FileManager;
 import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.data.media.hydratable.impl.track.Track;
 import com.hawolt.data.media.hydratable.impl.user.User;
+import com.hawolt.data.media.search.Explorer;
+import com.hawolt.data.media.search.query.impl.LikeQuery;
 import com.hawolt.logger.Logger;
 
 import java.io.IOException;
@@ -43,6 +45,14 @@ public class SoundcloudCLI {
                 @Override
                 public void onUser(String link, User user) {
                     Logger.debug("Loaded {}:{}", user.getUserId(), link);
+                    LikeQuery likeQuery = new LikeQuery(user.getUserId());
+                    try {
+                        for (Track track : Explorer.browse(likeQuery)) {
+                            System.out.println(track.getLink());
+                        }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 @Override
