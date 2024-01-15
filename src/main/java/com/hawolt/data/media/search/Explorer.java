@@ -45,8 +45,6 @@ public class Explorer<T> implements Iterator<PartialCollection<T>> {
             } else {
                 base = String.join("&", base, playlistId, playlistSecretToken);
             }
-        } else if (query instanceof LikeQuery) {
-
         }
         String uri = String.format(InstructionInterpreter.parse(base), URLEncoder.encode(query.getKeyword(), StandardCharsets.UTF_8.name()));
         Logger.debug("base_href={}", uri);
