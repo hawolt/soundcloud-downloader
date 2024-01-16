@@ -38,12 +38,12 @@ public class FileManager {
     }
 
     public static File getFile(Track track) {
-        String filename = String.format("%s.mp3", track.getPermalink());
+        String filename = String.format("%s.%s.mp3", track.getUser().getPermalink(), track.getPermalink());
         return path.resolve(filename).toFile();
     }
 
     public static boolean isCached(Track track) {
-        String filename = String.format("%s.mp3", track.getPermalink());
+        String filename = String.format("%s.%s.mp3", track.getUser().getPermalink(), track.getPermalink());
         return path.resolve(filename).toFile().exists();
     }
 
