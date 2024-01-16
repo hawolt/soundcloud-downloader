@@ -3,6 +3,7 @@ package com.hawolt.data.media;
 import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.http.Request;
 import com.hawolt.http.Response;
+import com.hawolt.logger.Logger;
 
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -26,13 +27,15 @@ public class MediaLoader implements Callable<Response> {
     @Override
     public Response call() throws Exception {
         Response response;
+        int code;
         do {
             Request request = new Request(resource);
             response = request.execute();
-            if (response.getCode() == 429) {
+            code = response.getCode();
+            if (code == 429 || code == 403 || code == 203) {
                 Hydratable.snooze((duration *= 3) * 1000L);
             }
-        } while (response.getCode() == 429);
+        } while (code == 429 || code == 403 || code == 203);
         return response;
     }
 }
