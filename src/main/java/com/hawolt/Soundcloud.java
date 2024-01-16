@@ -26,8 +26,7 @@ import java.util.concurrent.Executors;
  **/
 
 public class Soundcloud {
-    private static ExecutorService MAIN_EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
-    private static ExecutorService SECONDARY_EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+    private static ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
     private static final Map<String, MediaInterface<? extends Hydratable>> MAPPING = new HashMap<>();
     private static final Map<Class<? extends Hydratable>, List<HydratableInterface<? extends Hydratable>>> MANAGER = new HashMap<>();
 
@@ -58,7 +57,7 @@ public class Soundcloud {
     public static void load(String source, DownloadCallback callback) {
         String link = source.split("\\?")[0];
         Logger.debug("Track {}", link);
-        MAIN_EXECUTOR_SERVICE.execute(() -> {
+        EXECUTOR_SERVICE.execute(() -> {
             try {
                 MediaLoader loader = new MediaLoader(link);
                 Response response = loader.call();
@@ -71,13 +70,10 @@ public class Soundcloud {
                     if (!MAPPING.containsKey(hydratable)) continue;
                     available.put(hydratable, object);
                 }
-                String hydratable = available.containsKey("sound") ?
-                        "sound" : available.containsKey("playlist") ?
-                        "playlist" : available.containsKey("user") ?
-                        "user" : null;
+                String hydratable = available.containsKey("sound") ? "sound" : available.containsKey("playlist") ? "playlist" : available.containsKey("user") ? "user" : null;
                 if (hydratable == null) return;
                 Logger.debug("Hydratable {} for {}", hydratable, link);
-                SECONDARY_EXECUTOR_SERVICE.execute(() -> {
+                EXECUTOR_SERVICE.execute(() -> {
                     Hydratable klass = MAPPING.get(hydratable).convert(System.currentTimeMillis(), available.get(hydratable));
                     if (klass == null) return;
                     Logger.debug("Forward {} for {}", hydratable, link);
