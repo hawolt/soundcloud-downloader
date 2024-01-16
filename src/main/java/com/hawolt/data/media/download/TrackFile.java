@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created: 09/02/2022 13:02
@@ -17,23 +19,38 @@ import java.util.Map;
  **/
 
 public class TrackFile implements IFile, FileCallback {
-
     private final Map<Integer, TrackFragment> map = new HashMap<>();
     private DownloadCallback callback;
+    private ExecutorService service;
     private int fragments;
     private MP3 mp3;
 
-    private TrackFile(DownloadCallback callback, MP3 mp3) {
+    public TrackFile(DownloadCallback callback, MP3 mp3) {
+        this(callback, mp3, Hydratable.EXECUTOR_SERVICE);
+    }
+
+    private TrackFile(DownloadCallback callback, MP3 mp3, ExecutorService service) {
+        this.service = service;
         EXTM3U extm3U = mp3.getEXTM3U();
         if (extm3U == null) return;
         this.mp3 = mp3;
         this.callback = callback;
         List<String> list = extm3U.getFragmentList();
         for (int i = 0; i < list.size(); i++) {
-            TrackFragment fragment = new TrackFragment(this, i, list.get(i));
-            Hydratable.EXECUTOR_SERVICE.execute(fragment);
-            map.put(i, fragment);
+            map.put(i, new TrackFragment(this, i, list.get(i)));
         }
+        for (int i = 0; i < list.size(); i++) {
+            TrackFragment fragment = map.get(i);
+            if (service != null) {
+                service.execute(fragment);
+            } else {
+                fragment.run();
+            }
+        }
+    }
+
+    public static TrackFile get(DownloadCallback callback, MP3 mp3, ExecutorService service) {
+        return new TrackFile(callback, mp3, service);
     }
 
     public static TrackFile get(DownloadCallback callback, MP3 mp3) {
@@ -71,7 +88,11 @@ public class TrackFile implements IFile, FileCallback {
             Logger.debug("Failed to download track {}", mp3.getTrack().getPermalink());
             callback.onFailure(mp3.getTrack(), index);
         } else {
-            Hydratable.EXECUTOR_SERVICE.execute(map.get(index));
+            if (service != null) {
+                service.execute(map.get(index));
+            } else {
+                map.get(index).run();
+            }
         }
     }
 }
