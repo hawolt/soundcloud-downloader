@@ -78,18 +78,12 @@ public class Soundcloud {
                 if (hydratable == null) return;
                 Logger.debug("Hydratable {} for {}", hydratable, link);
                 SECONDARY_EXECUTOR_SERVICE.execute(() -> {
-                    CompletableFuture.supplyAsync(
-                                    () -> MAPPING.get(hydratable).convert(System.currentTimeMillis(), available.get(hydratable)),
-                                    Hydratable.EXECUTOR_SERVICE
-                            )
-                            .whenComplete((capture, e) -> {
-                                if (e != null) Logger.error(e);
-                                if (capture == null) return;
-                                Logger.debug("Forward {} for {}", hydratable, link);
-                                for (HydratableInterface<? extends Hydratable> hydratableInterface : MANAGER.get(capture.getClass())) {
-                                    hydratableInterface.accept(link, modify(capture));
-                                }
-                            });
+                    Hydratable klass = MAPPING.get(hydratable).convert(System.currentTimeMillis(), available.get(hydratable));
+                    if (klass == null) return;
+                    Logger.debug("Forward {} for {}", hydratable, link);
+                    for (HydratableInterface<? extends Hydratable> hydratableInterface : MANAGER.get(klass.getClass())) {
+                        hydratableInterface.accept(link, modify(klass));
+                    }
                 });
             } catch (Exception e) {
                 if (callback == null) Logger.error("{} {}", e.getMessage(), link);
