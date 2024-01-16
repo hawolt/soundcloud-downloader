@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
  **/
 
 public class Playlist extends Hydratable implements Iterable<Long> {
-    private final List<Long> list = new ArrayList<>();
+    private final List<Long> list = new LinkedList<>();
     private final String secret;
     private final long id;
 
