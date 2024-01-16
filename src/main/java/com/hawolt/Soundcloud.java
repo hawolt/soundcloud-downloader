@@ -17,6 +17,8 @@ import org.json.JSONObject;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created: 09/02/2022 11:41
@@ -24,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
  **/
 
 public class Soundcloud {
+    private static ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
     private static final Map<String, MediaInterface<? extends Hydratable>> MAPPING = new HashMap<>();
     private static final Map<Class<? extends Hydratable>, List<HydratableInterface<? extends Hydratable>>> MANAGER = new HashMap<>();
 
@@ -54,7 +57,7 @@ public class Soundcloud {
     public static void load(String source, DownloadCallback callback) {
         String link = source.split("\\?")[0];
         Logger.debug("Track {}", link);
-        Hydratable.EXECUTOR_SERVICE.execute(() -> {
+        EXECUTOR_SERVICE.execute(() -> {
             try {
                 MediaLoader loader = new MediaLoader(link);
                 Response response = loader.call();
@@ -73,7 +76,10 @@ public class Soundcloud {
                         "user" : null;
                 if (hydratable == null) return;
                 Logger.debug("Hydratable {} for {}", hydratable, link);
-                CompletableFuture.supplyAsync(() -> MAPPING.get(hydratable).convert(System.currentTimeMillis(), available.get(hydratable)))
+                CompletableFuture.supplyAsync(
+                                () -> MAPPING.get(hydratable).convert(System.currentTimeMillis(), available.get(hydratable)),
+                                Hydratable.EXECUTOR_SERVICE
+                        )
                         .whenComplete((capture, e) -> {
                             if (e != null) Logger.error(e);
                             if (capture == null) return;

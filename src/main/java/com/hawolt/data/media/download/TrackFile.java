@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
  **/
 
 public class TrackFile implements IFile, FileCallback {
+    private static ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
     private final Map<Integer, TrackFragment> map = new HashMap<>();
     private DownloadCallback callback;
     private ExecutorService service;
@@ -26,7 +27,7 @@ public class TrackFile implements IFile, FileCallback {
     private MP3 mp3;
 
     public TrackFile(DownloadCallback callback, MP3 mp3) {
-        this(callback, mp3, Hydratable.EXECUTOR_SERVICE);
+        this(callback, mp3, EXECUTOR_SERVICE);
     }
 
     private TrackFile(DownloadCallback callback, MP3 mp3, ExecutorService service) {
