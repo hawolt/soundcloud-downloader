@@ -58,7 +58,7 @@ public class Soundcloud {
             try {
                 MediaLoader loader = new MediaLoader(link);
                 Response response = loader.call();
-                JSONArray hydration = Hydration.from(response.getBodyAsString());
+                JSONArray hydration = Hydration.from(response);
                 Map<String, JSONObject> available = new HashMap<>();
                 for (int i = 0; i < hydration.length(); i++) {
                     JSONObject object = hydration.getJSONObject(i);
