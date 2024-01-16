@@ -60,6 +60,10 @@ public class Track extends Hydratable {
         return CompletableFuture.supplyAsync(() -> MP3.load(this, authorization, media.getTranscoding()), Hydratable.EXECUTOR_SERVICE);
     }
 
+    public MP3 getMP3() {
+        return MP3.load(this, authorization, media.getTranscoding());
+    }
+
     public String getWaveformURL() {
         return waveform;
     }
