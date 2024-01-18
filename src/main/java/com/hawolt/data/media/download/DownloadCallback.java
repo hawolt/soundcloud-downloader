@@ -12,7 +12,5 @@ public interface DownloadCallback {
 
     void onFailure(Track track, int fragment);
 
-    void onLoadFailure(String link, Exception e);
-
     void onTrack(Track track, byte[] b);
 }

@@ -16,7 +16,7 @@ public class PlaylistManager implements HydratableInterface<Playlist> {
     }
 
     @Override
-    public void accept(String link, Playlist hydratable) {
-        callback.ping(link, hydratable);
+    public void accept(String link, Playlist hydratable, String... args) {
+        callback.ping(link, hydratable, args);
     }
 }

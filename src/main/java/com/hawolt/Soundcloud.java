@@ -51,10 +51,14 @@ public class Soundcloud {
     }
 
     public static void load(String link) {
-        load(link, null);
+        load(link, null, new String[0]);
     }
 
-    public static void load(String source, DownloadCallback callback) {
+    public static void load(String link, String... args) {
+        load(link, null, args);
+    }
+
+    public static void load(String source, LoadCallback callback, String... args) {
         String link = source.split("\\?")[0];
         Logger.debug("Track {}", link);
         EXECUTOR_SERVICE.execute(() -> {
@@ -78,7 +82,7 @@ public class Soundcloud {
                     if (klass == null) return;
                     Logger.debug("Forward {} for {}", hydratable, link);
                     for (HydratableInterface<? extends Hydratable> hydratableInterface : MANAGER.get(klass.getClass())) {
-                        hydratableInterface.accept(link, modify(klass));
+                        hydratableInterface.accept(link, modify(klass), args);
                     }
                 });
             } catch (Exception e) {

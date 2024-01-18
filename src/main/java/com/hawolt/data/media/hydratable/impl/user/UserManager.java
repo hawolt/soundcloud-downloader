@@ -16,7 +16,7 @@ public class UserManager implements HydratableInterface<User> {
     }
 
     @Override
-    public void accept(String link, User hydratable) {
-        callback.ping(link, hydratable);
+    public void accept(String link, User hydratable, String... args) {
+        callback.ping(link, hydratable, args);
     }
 }

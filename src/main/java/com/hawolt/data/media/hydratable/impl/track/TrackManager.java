@@ -16,7 +16,7 @@ public class TrackManager implements HydratableInterface<Track> {
     }
 
     @Override
-    public void accept(String link, Track hydratable) {
-        callback.ping(link, hydratable);
+    public void accept(String link, Track hydratable, String... args) {
+        callback.ping(link, hydratable, args);
     }
 }

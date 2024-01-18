@@ -9,7 +9,6 @@ import java.util.concurrent.Executors;
  **/
 
 public class Hydratable {
-    public static ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
     protected final long loadReferenceTimestamp;
     public Hydratable(long loadReferenceTimestamp){
         this.loadReferenceTimestamp=loadReferenceTimestamp;
