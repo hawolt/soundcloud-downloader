@@ -1,5 +1,6 @@
 package interactive;
 
+import com.hawolt.Soundcloud;
 import com.hawolt.cli.Argument;
 import com.hawolt.cli.CLI;
 import com.hawolt.cli.Parser;
@@ -10,6 +11,7 @@ import com.hawolt.data.media.hydratable.impl.track.Track;
 import com.hawolt.data.media.hydratable.impl.user.User;
 import com.hawolt.data.media.search.Explorer;
 import com.hawolt.data.media.search.query.impl.LikeQuery;
+import com.hawolt.data.media.search.query.impl.UploadQuery;
 import com.hawolt.logger.Logger;
 
 import java.io.IOException;
@@ -36,19 +38,18 @@ public class SoundcloudCLI {
             CLI cli = parser.check(args);
             int threads = Integer.parseInt(cli.has("threads") ? cli.getValue("threads") : "1");
             Logger.debug("Initializing Executor with {} thread{}", threads, threads == 1 ? "" : "s");
-            Hydratable.EXECUTOR_SERVICE = Executors.newFixedThreadPool(threads);
             if (cli.has("directory")) {
                 FileManager.setup(Paths.get(cli.getValue("directory")));
             }
             Logger.debug("Setting file directory as \"{}\"", FileManager.path);
             AbstractMediaManager manager = new AbstractMediaManager() {
                 @Override
-                public void onUser(String link, User user) {
+                public void onUser(String link, User user, String... args) {
                     Logger.debug("Loaded {}:{}", user.getUserId(), link);
-                    LikeQuery likeQuery = new LikeQuery(user.getUserId());
+                    UploadQuery likeQuery = new UploadQuery(user.getUserId());
                     try {
                         for (Track track : Explorer.browse(likeQuery)) {
-                            System.out.println(track.getLink());
+                            Soundcloud.load(track.getLink());
                         }
                     } catch (Exception e) {
                         throw new RuntimeException(e);
