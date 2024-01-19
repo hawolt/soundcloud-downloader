@@ -58,7 +58,6 @@ public class Track extends Hydratable {
         this.commentCount = !o.isNull("comment_count") ? o.getInt("comment_count") : 0;
         this.createdAt = Instant.parse(!o.isNull("created_at") ? o.getString("created_at") : String.valueOf(System.currentTimeMillis())).toEpochMilli();
         Logger.debug("loaded metadata for track {}", id);
-        Logger.debug(o.toString(5));
     }
 
     public CompletableFuture<MP3> retrieveMP3() {
