@@ -26,7 +26,7 @@ public class Track extends Hydratable {
     private User user;
     private Tags tags;
 
-    private String description, title, genre, link, permalink, artwork, authorization, uri, waveform;
+    private String description, title, genre, link, permalink, artwork, authorization, uri, waveform, secretToken;
     private int likeCount, commentCount, playbackCount;
     private final long id;
     private long duration, createdAt;
@@ -38,6 +38,7 @@ public class Track extends Hydratable {
 
     public Track(long timestamp, JSONObject o) {
         super(timestamp);
+        this.secretToken = o.isNull("secret_token") ? null : o.getString("secret_token");
         this.waveform = o.isNull("waveform_url") ? null : o.getString("waveform_url");
         this.authorization = o.isNull("track_authorization") ? null : o.getString("track_authorization");
         this.media = new Media(o.getJSONObject("media"));
@@ -57,6 +58,7 @@ public class Track extends Hydratable {
         this.commentCount = !o.isNull("comment_count") ? o.getInt("comment_count") : 0;
         this.createdAt = Instant.parse(!o.isNull("created_at") ? o.getString("created_at") : String.valueOf(System.currentTimeMillis())).toEpochMilli();
         Logger.debug("loaded metadata for track {}", id);
+        Logger.debug(o.toString(5));
     }
 
     public CompletableFuture<MP3> retrieveMP3() {
@@ -65,6 +67,10 @@ public class Track extends Hydratable {
 
     public MP3 getMP3() {
         return MP3.load(this, authorization, media.getTranscoding());
+    }
+
+    public String getSecretToken() {
+        return secretToken;
     }
 
     public String getWaveformURL() {
