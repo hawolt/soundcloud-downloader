@@ -27,7 +27,11 @@ public class VirtualClient {
     private static long timestamp;
 
     public static String getID() throws Exception {
-        if (timestamp != 0L && System.currentTimeMillis() - INTERVAL >= 0) {
+        return getID(false);
+    }
+
+    public static String getID(boolean force) throws Exception {
+        if (timestamp != 0L || !force) {
             return clientID;
         }
         String clientID = fetch();
