@@ -31,7 +31,7 @@ public class VirtualClient {
     }
 
     public static String getID(boolean force) throws Exception {
-        if (clientID != null &&  ( timestamp != 0L || !force)) {
+        if (clientID != null && (timestamp != 0L && !force)) {
             return clientID;
         }
         String clientID = fetch();
