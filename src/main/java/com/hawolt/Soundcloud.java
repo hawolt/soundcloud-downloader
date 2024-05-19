@@ -4,6 +4,7 @@ import com.hawolt.data.VirtualClient;
 import com.hawolt.data.media.MediaInterface;
 import com.hawolt.data.media.MediaLoader;
 import com.hawolt.data.media.download.DownloadCallback;
+import com.hawolt.data.media.download.TrackFile;
 import com.hawolt.data.media.hydratable.Hydratable;
 import com.hawolt.data.media.hydratable.HydratableInterface;
 import com.hawolt.data.media.hydratable.Hydration;
@@ -109,5 +110,11 @@ public class Soundcloud {
             list.add(new Track(timestamp, collection.getJSONObject(i)));
         }
         return list;
+    }
+
+    public static void shutdown() {
+        TrackFile.getExecutorService().shutdown();
+        Track.getExecutorService().shutdown();
+        Soundcloud.EXECUTOR_SERVICE.shutdown();
     }
 }

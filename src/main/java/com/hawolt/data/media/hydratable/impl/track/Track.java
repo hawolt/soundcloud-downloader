@@ -152,6 +152,10 @@ public class Track extends Hydratable {
         return commentCount;
     }
 
+    public static ExecutorService getExecutorService() {
+        return EXECUTOR_SERVICE;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Track)) return false;

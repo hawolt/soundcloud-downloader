@@ -96,4 +96,8 @@ public class TrackFile implements IFile, FileCallback {
             }
         }
     }
+
+    public static ExecutorService getExecutorService() {
+        return EXECUTOR_SERVICE;
+    }
 }
