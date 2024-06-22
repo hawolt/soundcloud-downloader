@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
  **/
 
 public class Track extends Hydratable {
-    private static ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
     private Media media;
     private User user;
     private Tags tags;
@@ -29,7 +29,7 @@ public class Track extends Hydratable {
     private String description, title, genre, link, permalink, artwork, authorization, uri, waveform, secretToken;
     private int likeCount, commentCount, playbackCount;
     private final long id;
-    private long duration, createdAt;
+    private long duration, createdAt, fullDuration;
 
     public Track(long timestamp, long t) {
         super(timestamp);
@@ -54,7 +54,8 @@ public class Track extends Hydratable {
         this.likeCount = !o.isNull("likes_count") ? o.getInt("likes_count") : 0;
         this.playbackCount = !o.isNull("playback_count") ? o.getInt("playback_count") : 0;
         this.id = !o.isNull("id") ? o.getLong("id") : 0;
-        this.duration = !o.isNull("full_duration") ? o.getLong("full_duration") : 0;
+        this.duration = !o.isNull("duration") ? o.getLong("duration") : 0;
+        this.fullDuration = !o.isNull("full_duration") ? o.getLong("full_duration") : 0;
         this.commentCount = !o.isNull("comment_count") ? o.getInt("comment_count") : 0;
         this.createdAt = Instant.parse(!o.isNull("created_at") ? o.getString("created_at") : String.valueOf(System.currentTimeMillis())).toEpochMilli();
         Logger.debug("loaded metadata for track {}", id);
@@ -99,6 +100,15 @@ public class Track extends Hydratable {
     public long getDuration() {
         return duration;
     }
+
+    public long getFullDuration() {
+        return fullDuration;
+    }
+
+    public boolean isPro() {
+        return duration != fullDuration;
+    }
+
 
     public int getPlaybackCount() {
         return playbackCount;
